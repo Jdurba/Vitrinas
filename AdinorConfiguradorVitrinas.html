@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurador de Vitrinas de Aluminio</title>
+    <style>
+        :root {
+            --color-primary: #2c3e50;
+            --color-secondary: #3498db;
+            --color-accent: #e74c3c;
+            --color-bg: #f5f6fa;
+            --color-card: #ffffff;
+            --color-text: #2c3e50;
+            --color-text-light: #7f8c8d;
+            --border-radius: 8px;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-hover: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: var(--color-primary);
+            color: white;
+            padding: 18px 0;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            flex: 1;                    /* Ocupa el espacio disponible */
+            text-align: center;         /* Centra el texto */
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-logo {
+            height: 70px;        /* Cambia este valor: 30px, 40px, 50px, 60px, etc. */
+            width: auto;
+            object-fit: contain;
+        }
+
+        @media (max-width: 600px) {
+            .header-logo {
+                height: 40px;    /* Tamaño en móviles */
+            }
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Panel de Configuración */
+        .config-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .section-card {
+            background: var(--color-card);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: box-shadow 0.3s;
+        }
+
+        .section-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--color-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--color-secondary);
+            border-radius: 2px;
+        }
+
+        /* Selector de Modelos (Grid Visual) */
+        .modelos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .modelo-card {
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            position: relative;
+            overflow: hidden;
+            min-height: 160px;
+        }
+
+        .modelo-card:hover {
+            border-color: var(--color-secondary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .modelo-card.selected {
+            border-color: var(--color-secondary);
+            background: #ebf5fb;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .modelo-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--color-secondary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .modelo-placeholder {
+            display: none;
+            height: 80px;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            color: #999;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .modelo-img.error + .modelo-placeholder,
+        .modelo-img[style*="display: none"] + .modelo-placeholder {
+            display: flex;
+        }
+
+        .modelo-img {
+            width: 100%;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            background: transparent;
+            border-radius: 4px;
+            padding: 5px;
+            transition: transform 0.3s;
+        }
+
+        .modelo-codigo {
+            font-weight: 600;
+            color: var(--color-primary);
+            font-size: 1.1rem;
+        }
+
+        .modelo-desc {
+            font-size: 0.85rem;
+            color: var(--color-text-light);
+            margin-top: 2px;
+        }
+
+        /* Selector de Acabados */
+        .acabados-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .acabado-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .acabado-item:hover {
+            border-color: var(--color-secondary);
+        }
+
+        .acabado-muestra {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .acabado-item.selected {
+            border-color: var(--color-secondary);
+            background: #ebf5fb;
+        }
+
+        .acabado-info {
+            width: 100%;
+        }
+
+        .acabado-nombre {
+            font-weight: 600;
+            color: var(--color-primary);
+            font-size: 0.9rem;
+            line-height: 1.3;
+        }
+
+        /* Formulario de Dimensiones */
+        .dimensiones-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-primary);
+            font-size: 0.9rem;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--color-secondary);
+        }
+
+        .input-hint {
+            font-size: 0.8rem;
+            color: var(--color-text-light);
+            margin-top: 5px;
+        }
+
+        /* Panel de Resumen */
+        .resumen-panel {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .resumen-card {
+            background: var(--color-card);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .resumen-title {
+            font-size: 1.3rem;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .resumen-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .resumen-item:last-child {
+            border-bottom: none;
+        }
+
+        .resumen-label {
+            color: var(--color-text-light);
+        }
+
+        .resumen-value {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .resumen-value.highlight {
+            color: var(--color-secondary);
+            font-size: 1.1rem;
+        }
+
+        .precio-total {
+            background: var(--color-primary);
+            color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .precio-total .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .precio-total .value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .btn-calcular {
+            width: 100%;
+            padding: 15px;
+            background: var(--color-secondary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-calcular:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-calcular:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Visualización de la Vitrina */
+        .preview-vitrina {
+            /*background: #f8f9fa;   */
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 50px;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #ddd;
+        }
+
+        .vitrina-preview-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .vitrina-svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Estados de validación */
+        .error-message {
+            color: var(--color-accent);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-group.error input {
+            border-color: var(--color-accent);
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @media (max-width: 600px) {
+            .acabados-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .opciones-adicionales {
+            margin-top: 10px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: normal;
+            color: var(--color-text);
+            position: relative;
+            padding-left: 30px;
+            min-height: 24px;
+        }
+
+        .checkbox-item input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .checkmark {
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .checkbox-item:hover .checkmark {
+            border-color: var(--color-secondary);
+        }
+
+        .checkbox-item input:checked ~ .checkmark {
+            background: var(--color-secondary);
+            border-color: var(--color-secondary);
+        }
+
+        .checkmark::after {
+            content: '';
+            position: absolute;
+            display: none;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .checkbox-item input:checked ~ .checkmark::after {
+            display: block;
+        }
+
+        select:disabled {
+            background-color: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        label.disabled {
+            color: #999;
+            opacity: 0.6;
+        }
+
+        label.active-label {
+            color: var(--color-primary);
+            opacity: 1;
+        }
+
+        /* Tabla de medidas estilo Excel */
+        .medidas-container {
+            border: 2px solid #999;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .medidas-titulo {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .medidas-grid {
+            display: grid;
+            grid-template-columns: 120px 1fr 1fr 1fr;
+            gap: 10px;
+            align-items: start;
+        }
+
+        .medidas-header {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #555;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .medidas-header.real-fabricar {
+            color: #2c3e50;
+        }
+
+        .medidas-label {
+            font-size: 0.9rem;
+            color: #333;
+            text-align: right;
+            padding-right: 10px;
+            padding-top: 8px;
+        }
+
+        .medidas-input input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ccc;
+            border-radius: 3px;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .medidas-input input:focus {
+            outline: none;
+            border-color: var(--color-secondary);
+        }
+
+        .medidas-input.real-fabricar input.readonly {
+            background: #fffbdf;
+            border-color: #ddd;
+            color: #333;
+            font-weight: 600;
+        }
+
+        #bisagras:disabled {
+            background-color: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        #bisagrasLabel.disabled {
+            color: #999;
+        }
+
+        .bisagras-advertencia {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--color-accent);
+            margin-top: 5px;
+            min-height: 18px;
+        }
+
+        .opciones-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .medidas-grid {
+                grid-template-columns: 80px 1fr 1fr 1fr;
+                gap: 5px;
+            }
+            
+            .medidas-header {
+                font-size: 0.75rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .preview-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .resumen-content {
+            margin: 20px 0;
+        }
+
+        .bisagras-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+        }
+
+        .bisagras-extra {
+            font-size: 0.75rem;
+            color: var(--color-accent);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .btn-reset {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: transparent;
+            color: var(--color-text-light);
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-reset:hover {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+        }
+
+        .resumen-item.incompleto .resumen-value {
+            color: #ccc;
+            font-style: italic;
+        }
+
+        .resumen-item.completo .resumen-value {
+            color: var(--color-primary);
+        }
+
+        .medidas-input input.valido {
+            border-color: #27ae60;
+            background-color: #f0fff0;
+        }
+
+        .medidas-input input.advertencia {
+            border-color: #f39c12;
+            background-color: #fffbf0;
+        }
+
+        .medidas-input input.error {
+            border-color: var(--color-accent);
+            background-color: #fff0f0;
+        }
+        
+        .medidas-input input.bloqueado {
+            border-color: var(--color-accent);
+            background-color: #ffe0e0;
+            font-weight: 600;
+        }
+
+        .medidas-input {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .medidas-input input {
+            width: 100%;
+        }
+
+        .medidas-mensaje {
+            min-height: 16px;
+            font-size: 0.75rem;
+            line-height: 1.2;
+        }
+
+        .medidas-mensaje.valido {
+            color: #27ae60;
+        }
+
+        .medidas-mensaje.advertencia {
+            color: #f39c12;
+        }
+
+        .medidas-mensaje.error {
+            color: var(--color-accent);
+        }
+        
+        .medidas-mensaje.info {
+            color: #27ae60;
+            font-style: italic;
+        }
+        
+        /* Selector de Tiradores */
+        .tiradores-selector {
+            display: none;
+            margin-top: 12px;
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .tiradores-selector.visible {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .tiradores-titulo {
+            font-size: 0.85rem;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .tiradores-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .tirador-card {
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            position: relative;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .tirador-card:hover {
+            border-color: var(--color-secondary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .tirador-card.selected {
+            border-color: var(--color-secondary);
+            background: #ebf5fb;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .tirador-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--color-secondary);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+        
+        .tirador-img {
+            width: 100%;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            background: transparent;
+            border-radius: 4px;
+            padding: 3px;
+        }
+        
+        .tirador-nombre {
+            font-weight: 600;
+            color: var(--color-primary);
+            font-size: 0.9rem;
+            line-height: 1.2;
+        }
+        
+        .tirador-medidas {
+            font-size: 0.75rem;
+            color: var(--color-text-light);
+            margin-top: 2px;
+        }
+        
+        .tirador-precio {
+            font-size: 0.85rem;
+            color: var(--color-secondary);
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        
+        @media (max-width: 600px) {
+            .tiradores-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tiradores-selector {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/LogoAdinorBlanco.png" 
+                    alt="Adinor Logo" 
+                    class="header-logo">
+                <h1>Configurador de Vitrinas de Aluminio</h1>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-grid">
+            
+            <!-- Panel Izquierdo: Configuración -->
+            <div class="config-panel">
+                
+                <!-- Sección 1: Selección de Modelo -->
+                <div class="section-card">
+                    <h2 class="section-title">1. Selecciona el Modelo de Perfil</h2>
+                    <div class="modelos-grid" id="modelosContainer">
+                        <div class="modelo-card" data-modelo="7991">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/7991_cotas.jpg" 
+                                alt="Modelo 7991" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">7991</div>
+                            <div class="modelo-codigo">7991</div>
+                            <div class="modelo-desc">20x45 P8</div>
+                        </div>
+                        
+                        <div class="modelo-card" data-modelo="7994">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/7994_cotas.jpg" 
+                                alt="Modelo 7994" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">7994</div>
+                            <div class="modelo-codigo">7994</div>
+                            <div class="modelo-desc">20x45 P4</div>
+                        </div>
+                        
+                        <div class="modelo-card" data-modelo="7995">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/7995_cotas.jpg" 
+                                alt="Modelo 7995" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">7995</div>
+                            <div class="modelo-codigo">7995</div>
+                            <div class="modelo-desc">35x45 P8</div>
+                        </div>
+                        
+                        <div class="modelo-card" data-modelo="7990">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/7990_cotas.jpg" 
+                                alt="Modelo 7990" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">7990</div>
+                            <div class="modelo-codigo">7990</div>
+                            <div class="modelo-desc">20x45 P20</div>
+                        </div>
+                        
+                        <div class="modelo-card" data-modelo="7998">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/7998_cotas.jpg" 
+                                alt="Modelo 7998" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">7998</div>
+                            <div class="modelo-codigo">7998</div>
+                            <div class="modelo-desc">20x45 P45</div>
+                        </div>
+                        
+                        <div class="modelo-card" data-modelo="7993">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/7993_cotas.jpg" 
+                                alt="Modelo 7993" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">7993</div>
+                            <div class="modelo-codigo">7993</div>
+                            <div class="modelo-desc">19x21</div>
+                        </div>
+                        
+                        <div class="modelo-card" data-modelo="7996">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/7996_cotas.jpg" 
+                                alt="Modelo 7996" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">7996</div>
+                            <div class="modelo-codigo">7996</div>
+                            <div class="modelo-desc">20x18 P8</div>
+                        </div>
+                        
+                        <div class="modelo-card" data-modelo="7999">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/7999_cotas.jpg" 
+                                alt="Modelo 7999" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">7999</div>
+                            <div class="modelo-codigo">7999</div>
+                            <div class="modelo-desc">16x60 S/P</div>
+                        </div>
+                        
+                        <div class="modelo-card" data-modelo="79916">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/79916_cotas.jpg" 
+                                alt="Modelo 79916" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">79916</div>
+                            <div class="modelo-codigo">79916</div>
+                            <div class="modelo-desc">20x56 C/P</div>
+                        </div>
+                        
+                        <div class="modelo-card" data-modelo="BT100">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/BT100_cotas.jpg" 
+                                alt="Modelo BT100" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">BT100</div>
+                            <div class="modelo-codigo">BT100</div>
+                            <div class="modelo-desc">Perfil BT100</div>
+                        </div>
+                        
+                        <div class="modelo-card" data-modelo="BT110">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/BT110_cotas.jpg" 
+                                alt="Modelo BT110" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">BT110</div>
+                            <div class="modelo-codigo">BT110</div>
+                            <div class="modelo-desc">Perfil BT110</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección 2: Selección de Acabado -->
+                <div class="section-card">
+                    <h2 class="section-title">2. Selecciona el Acabado</h2>
+                    <div class="acabados-list" id="acabadosContainer">
+                        <div class="acabado-item" data-acabado="PM">
+                            <div class="acabado-muestra" style="background: linear-gradient(135deg, #C0C0C0 0%, #E8E8E8 100%);"></div>
+                            <div class="acabado-info">
+                                <div class="acabado-nombre">Plata Mate (A.PM)</div>
+                            </div>
+                        </div>
+                        <div class="acabado-item" data-acabado="P">
+                            <div class="acabado-muestra" style="background: linear-gradient(135deg, #E8E8E8 0%, #FFFFFF 50%, #E8E8E8 100%);"></div>
+                            <div class="acabado-info">
+                                <div class="acabado-nombre">Plata Brillo (A.P)</div>
+                            </div>
+                        </div>
+                        <div class="acabado-item" data-acabado="B">
+                            <div class="acabado-muestra" style="background: #FFFFFF; border: 2px solid #ddd;"></div>
+                            <div class="acabado-info">
+                                <div class="acabado-nombre">Lacado Blanco (L.B)</div>
+                            </div>
+                        </div>
+                        <div class="acabado-item" data-acabado="NM">
+                            <div class="acabado-muestra" style="background: #1a1a1a;"></div>
+                            <div class="acabado-info">
+                                <div class="acabado-nombre">Lacado Negro Mate (L.NM)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección 3: Dimensiones y Opciones -->
+                <div class="section-card">
+                    <h2 class="section-title">3. Dimensiones y Opciones</h2>
+
+                    <!-- Tabla de medidas estilo Excel -->
+                    <div class="medidas-container">
+                        <h3 class="medidas-titulo">Medidas en milímetros (mm)</h3>
+                        
+                        <div class="medidas-grid">
+                            <!-- Cabeceras -->
+                            <div class="medidas-header"></div>
+                            <div class="medidas-header">Módulo</div>
+                            <div class="medidas-header">Descuentos</div>
+                            <div class="medidas-header real-fabricar">Real a fabricar</div>
+                            
+                            <!-- Fila Altura -->
+                            <div class="medidas-label">Altura puerta</div>
+                            <div class="medidas-input">
+                                <input type="number" id="alturaModulo" name="alturaModulo" placeholder="Ej: 910" onkeydown="if(event.key==='Enter')this.blur()">
+                            </div>
+                            <div class="medidas-input">
+                                <input type="number" id="alturaDescuento" name="alturaDescuento" value="2" min="0" onkeydown="if(event.key==='Enter')this.blur()">
+                            </div>
+                            <div class="medidas-input real-fabricar">
+                                <input type="number" id="alturaReal" name="alturaReal" class="readonly" onkeydown="if(event.key==='Enter')this.blur()">
+                                <span class="medidas-mensaje" id="alturaMensaje"></span>
+                            </div>
+                            
+                            <!-- Fila Anchura -->
+                            <div class="medidas-label">Ancho puerta</div>
+                            <div class="medidas-input">
+                                <input type="number" id="anchoModulo" name="anchoModulo" placeholder="Ej: 286" onkeydown="if(event.key==='Enter')this.blur()">
+                            </div>
+                            <div class="medidas-input">
+                                <input type="number" id="anchoDescuento" name="anchoDescuento" value="2" min="0" onkeydown="if(event.key==='Enter')this.blur()">
+                            </div>
+                            <div class="medidas-input real-fabricar">
+                                <input type="number" id="anchoReal" name="anchoReal" class="readonly" onkeydown="if(event.key==='Enter')this.blur()">
+                                <span class="medidas-mensaje" id="anchoMensaje"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resto de opciones -->
+                    <div class="opciones-form">
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bisagras" id="bisagrasLabel">Número de Bisagras</label>
+                                <select id="bisagras" name="bisagras" disabled>
+                                    <option value="">Introduce altura real primero</option>
+                                    <option value="2">2 Bisagras (300-900 mm)</option>
+                                    <option value="3">3 Bisagras (901-1800 mm)</option>
+                                    <option value="4">4 Bisagras (1801-2400 mm)</option>
+                                    <option value="5">5 Bisagras (2401-2800 mm - Solo 7995)</option>
+                                    <option value="6">6 Bisagras (Máximo)</option>
+                                </select>
+                                <span class="input-hint" id="bisagrasHint">Complete la altura real para activar</span>
+                                <span class="bisagras-advertencia" id="bisagrasAdvertencia"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cantidad">Cantidad de Vitrinas</label>
+                                <input type="number" id="cantidad" name="cantidad" min="1" value="1">
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width opciones-adicionales">
+                            <label>Opciones adicionales</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="tirador" name="tirador">
+                                    <span class="checkmark"></span>
+                                    Tirador mecanizado
+                                </label>
+                                
+                                <!-- Selector de tiradores (justo después del checkbox) -->
+                                <div class="tiradores-selector" id="tiradoresSelector">
+                                    <div class="tiradores-titulo">Selecciona el tipo de tirador:</div>
+                                    <div class="tiradores-grid">
+                                        <div class="tirador-card" data-tirador="126x35">
+                                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/126x35.jpg" 
+                                                alt="Tirador 126x35" 
+                                                class="tirador-img"
+                                                onerror="this.style.display='none'">
+                                            <div class="tirador-nombre">126 × 35 mm</div>
+                                        </div>
+                                        
+                                        <div class="tirador-card" data-tirador="37x16">
+                                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/37x16.jpg" 
+                                                alt="Tirador 37x16" 
+                                                class="tirador-img"
+                                                onerror="this.style.display='none'">
+                                            <div class="tirador-nombre">37 × 16 mm</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="vidrioMontado" name="vidrioMontado">
+                                    <span class="checkmark"></span>
+                                    Montada con Vidrio
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Combo de color de vidrio -->
+                        <div class="form-group full-width" id="colorVidrioGroup">
+                            <label for="colorVidrio" id="colorVidrioLabel" class="disabled">Color del Vidrio</label>
+                            <select id="colorVidrio" name="colorVidrio" disabled>
+                                <option value="">Selecciona color...</option>
+                                <option value="transparente">Transparente</option>
+                                <option value="mate">Mate</option>
+                                <option value="bronce">Bronce</option>
+                                <option value="gris">Gris</option>
+                                <option value="grisoscuro">Gris oscuro</option>
+                                <option value="especial">Especial</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- CIERRE config-panel -->
+
+            <!-- Panel Derecho: Resumen -->
+            <div class="resumen-panel">
+                <div class="resumen-card">
+                    <h2 class="resumen-title">Resumen de Configuración</h2>
+                    
+                    <!-- Espacio reservado para futuro dibujo -->
+                    <div class="preview-vitrina" id="previewVitrina">
+                        <div class="preview-placeholder">
+                            <!--  <span>Vista previa del perfil</span>   -->
+                        </div>
+                    </div>
+
+                    <div class="resumen-content" id="resumenContent">
+                        <div class="resumen-item">
+                            <span class="resumen-label">Modelo:</span>
+                            <span class="resumen-value" id="resumenModelo">-</span>
+                        </div>
+                        
+                        <div class="resumen-item">
+                            <span class="resumen-label">Acabado:</span>
+                            <span class="resumen-value" id="resumenAcabado">-</span>
+                        </div>
+                        
+                        <div class="resumen-item">
+                            <span class="resumen-label">Dimensiones:</span>
+                            <span class="resumen-value" id="resumenDimensiones">-</span>
+                        </div>
+                        
+                        <div class="resumen-item">
+                            <span class="resumen-label">Cantidad:</span>
+                            <span class="resumen-value" id="resumenCantidad">-</span>
+                        </div>
+                        
+                        <div class="resumen-item">
+                            <span class="resumen-label">Bisagras:</span>
+                            <div class="resumen-value bisagras-info">
+                                <span id="resumenBisagras">-</span>
+                                <span class="bisagras-extra" id="resumenBisagrasExtra"></span>
+                            </div>
+                        </div>
+
+                        <div class="resumen-item">
+                            <span class="resumen-label">Tirador:</span>
+                            <span class="resumen-value" id="resumenTirador">No</span>
+                        </div>
+
+                        <div class="resumen-item">
+                            <span class="resumen-label">Vidrio:</span>
+                            <span class="resumen-value" id="resumenVidrio">No</span>
+                        </div>
+                    </div>
+
+                    <div class="precio-total">
+                        <div class="label">PRECIO ESTIMADO</div>
+                        <div class="value" id="precioTotal">0,00 €</div>
+                    </div>
+
+                    <button class="btn-calcular" id="btnCalcular" disabled>
+                        Calcular Presupuesto
+                    </button>
+
+                    <button class="btn-calcular" id="btnFabricar" disabled>
+                        Paso a fabricación
+                    </button>
+
+                    <button class="btn-reset" id="btnReset">
+                        Resetear Datos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+// ==========================================
+// CONFIGURACIÓN EXTERNA
+// ==========================================
+const CONFIG = {
+    precios: {
+        Tirador_126x35: 7.62,
+        Tirador_37x16: 5.25,
+        bisagra_extra: 5.00,
+        bisagra_minimas: 2
+    },
+    modelos: {
+        '7991': { nombre: '20x45 P8', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
+        '7994': { nombre: '20x45 P4', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
+        '7995': { nombre: '35x45 P8', maxAltura: 2800, maxAncho: 700, Minimo: 150 },
+        '7990': { nombre: '20x45 P20', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
+        '7998': { nombre: '20x45 P45', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
+        '7993': { nombre: '19x21', maxAltura: 2400, maxAncho: 600, Minimo: 150 },
+        '7996': { nombre: '20x18 P8', maxAltura: 2400, maxAncho: 600, Minimo: 150 },
+        '7999': { nombre: '16x60 S/P', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
+        '79916': { nombre: '20x56 C/P', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
+        'BT100': { nombre: 'Perfil BT100', maxAltura: 2600, maxAncho: 700, Minimo: 150 },
+        'BT110': { nombre: 'Perfil BT110', maxAltura: 2700, maxAncho: 700, Minimo: 150 }
+    },
+    acabados: {
+        'PM': { nombre: 'Plata Mate (A.PM)' },
+        'P': { nombre: 'Plata Brillo (A.P)' },
+        'B': { nombre: 'Lacado Blanco (L.B)' },
+        'NM': { nombre: 'Lacado Negro Mate (L.NM)' }
+    },
+    tiradores: {
+        '126x35': { 
+            nombre: 'Tirador 126x35', 
+            medidas: '126 × 35 mm',
+            imagen: 'https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/126x35.jpg'
+        },
+        '37x16': { 
+            nombre: 'Tirador 37x16', 
+            medidas: '37 × 16 mm',
+            imagen: 'https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/37x16.jpg'
+        }
+    }
+};
+
+// ==========================================
+// ESTADO DE LA APLICACIÓN
+// ==========================================
+const state = {
+    modelo: null,
+    acabado: null,
+    alturaModulo: 0,
+    alturaDescuento: 2,
+    alturaReal: 0,
+    alturaValido: null,
+    anchoModulo: 0,
+    anchoDescuento: 2,
+    anchoReal: 0,
+    anchoValido: null,
+    cantidad: 1,
+    bisagras: '',
+    bisagrasCalculadas: 0,
+    tirador: false,
+    tiradorTipo: null, // '126x35' o '37x16'
+    vidrioMontado: false,
+    colorVidrio: ''
+};
+
+// ==========================================
+// ELEMENTOS DOM
+// ==========================================
+const elementos = {
+    modelos: document.querySelectorAll('.modelo-card'),
+    acabados: document.querySelectorAll('.acabado-item'),
+    alturaModulo: document.getElementById('alturaModulo'),
+    alturaDescuento: document.getElementById('alturaDescuento'),
+    alturaReal: document.getElementById('alturaReal'),
+    alturaMensaje: document.getElementById('alturaMensaje'),
+    anchoModulo: document.getElementById('anchoModulo'),
+    anchoDescuento: document.getElementById('anchoDescuento'),
+    anchoReal: document.getElementById('anchoReal'),
+    anchoMensaje: document.getElementById('anchoMensaje'),
+    cantidad: document.getElementById('cantidad'),
+    bisagras: document.getElementById('bisagras'),
+    bisagrasHint: document.getElementById('bisagrasHint'),
+    bisagrasAdvertencia: document.getElementById('bisagrasAdvertencia'),
+    tirador: document.getElementById('tirador'),
+    tiradoresSelector: document.getElementById('tiradoresSelector'),
+    tiradoresCards: document.querySelectorAll('.tirador-card'),
+    vidrioMontado: document.getElementById('vidrioMontado'),
+    colorVidrio: document.getElementById('colorVidrio'),
+    colorVidrioLabel: document.getElementById('colorVidrioLabel'),
+    resumenModelo: document.getElementById('resumenModelo'),
+    resumenAcabado: document.getElementById('resumenAcabado'),
+    resumenDimensiones: document.getElementById('resumenDimensiones'),
+    resumenCantidad: document.getElementById('resumenCantidad'),
+    resumenBisagras: document.getElementById('resumenBisagras'),
+    resumenBisagrasExtra: document.getElementById('resumenBisagrasExtra'),
+    resumenTirador: document.getElementById('resumenTirador'),
+    resumenVidrio: document.getElementById('resumenVidrio'),
+    precioTotal: document.getElementById('precioTotal'),
+    btnCalcular: document.getElementById('btnCalcular'),
+    btnFabricar: document.getElementById('btnFabricar'), 
+    btnReset: document.getElementById('btnReset')
+};
+
+// ==========================================
+// INICIALIZACIÓN
+// ==========================================
+function init() {
+    console.log('Inicializando aplicación...');
+    
+    // Eventos: Modelos
+    elementos.modelos.forEach(card => {
+        card.addEventListener('click', () => {
+            console.log('Modelo clickeado:', card.dataset.modelo);
+            seleccionarModelo(card);
+        });
+    });
+    
+    // Eventos: Acabados
+    elementos.acabados.forEach(item => {
+        item.addEventListener('click', () => {
+            console.log('Acabado clickeado:', item.dataset.acabado);
+            seleccionarAcabado(item);
+        });
+    });
+    
+    // Eventos: Medidas
+    elementos.alturaModulo?.addEventListener('blur', () => calcularMedida('altura', 'modulo'));
+    elementos.alturaDescuento?.addEventListener('blur', () => calcularMedida('altura', 'descuento'));
+    elementos.alturaReal?.addEventListener('blur', () => calcularMedida('altura', 'real'));
+    elementos.anchoModulo?.addEventListener('blur', () => calcularMedida('ancho', 'modulo'));
+    elementos.anchoDescuento?.addEventListener('blur', () => calcularMedida('ancho', 'descuento'));
+    elementos.anchoReal?.addEventListener('blur', () => calcularMedida('ancho', 'real'));
+    
+    // Eventos: Opciones
+    elementos.cantidad?.addEventListener('change', actualizarCantidad);
+    elementos.bisagras?.addEventListener('change', actualizarBisagras);
+    elementos.tirador?.addEventListener('change', actualizarTirador);
+    
+    // Eventos: Selector de tiradores
+    elementos.tiradoresCards.forEach(card => {
+        card.addEventListener('click', () => seleccionarTirador(card));
+    });
+    
+    elementos.vidrioMontado?.addEventListener('change', actualizarVidrio);
+    elementos.colorVidrio?.addEventListener('change', actualizarColorVidrio);
+    
+    // Eventos: Botones
+    elementos.btnCalcular?.addEventListener('click', calcularPresupuesto);
+    elementos.btnFabricar?.addEventListener('click', pasarAFabricacion); 
+    elementos.btnReset?.addEventListener('click', resetearDatos);
+    
+    // Actualizar precios en la interfaz desde CONFIG
+    actualizarPreciosInterfaz();
+    
+    // Inicializar estado
+    actualizarResumen();
+    validarFormulario();
+    
+    console.log('Aplicación inicializada correctamente');
+}
+
+// ==========================================
+// ACTUALIZAR PRECIOS EN LA INTERFAZ
+// ==========================================
+function actualizarPreciosInterfaz() {
+    // Actualizar precios de tiradores en las cards
+    const precio126 = document.getElementById('precioTirador126x35');
+    const precio37 = document.getElementById('precioTirador37x16');
+    
+    if (precio126) {
+        precio126.textContent = `${CONFIG.precios.Tirador_126x35.toFixed(2)} €`;
+    }
+    if (precio37) {
+        precio37.textContent = `${CONFIG.precios.Tirador_37x16.toFixed(2)} €`;
+    }
+}
+
+// ==========================================
+// SELECCIÓN DE MODELO
+// ==========================================
+
+function seleccionarModelo(card) {
+    console.log('Seleccionando modelo:', card.dataset.modelo);
+    elementos.modelos.forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    state.modelo = card.dataset.modelo;
+    console.log('Estado del modelo actualizado:', state.modelo);
+    
+    // Actualizar vista previa del perfil
+    actualizarVistaPrevia();
+    
+    // Mostrar rangos válidos en los mensajes si no hay medidas
+    if (!state.alturaReal || state.alturaReal === 0) {
+        const validacionAltura = validarMedida('altura', 0);
+        mostrarValidacion('altura', validacionAltura);
+    } else {
+        // Re-validar altura existente
+        const validacionAltura = validarMedida('altura', state.alturaReal);
+        mostrarValidacion('altura', validacionAltura);
+    }
+    
+    if (!state.anchoReal || state.anchoReal === 0) {
+        const validacionAncho = validarMedida('ancho', 0);
+        mostrarValidacion('ancho', validacionAncho);
+    } else {
+        // Re-validar ancho existente
+        const validacionAncho = validarMedida('ancho', state.anchoReal);
+        mostrarValidacion('ancho', validacionAncho);
+    }
+    
+    actualizarResumen();
+    validarFormulario();
+}
+
+
+// ==========================================
+// ACTUALIZAR VISTA PREVIA DEL PERFIL
+// ==========================================
+function actualizarVistaPrevia() {
+    const previewContainer = document.getElementById('previewVitrina');
+    if (!previewContainer) return;
+    
+    if (state.modelo) {
+        const imagenUrl = `https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/${state.modelo}_cotas.jpg`;
+        
+        previewContainer.innerHTML = `
+            <img src="${imagenUrl}" 
+                 alt="Perfil ${state.modelo}" 
+                 class="vitrina-preview-img"
+                 onerror="this.parentElement.innerHTML='<div class=\'preview-placeholder\'><span>Imagen no disponible</span></div>'">
+        `;
+    } else {
+        previewContainer.innerHTML = `
+            <div class="preview-placeholder">
+                <span>Vista previa del perfil</span>
+            </div>
+        `;
+    }
+}
+
+
+
+// ==========================================
+// SELECCIÓN DE ACABADO
+// ==========================================
+function seleccionarAcabado(item) {
+    console.log('Seleccionando acabado:', item.dataset.acabado);
+    elementos.acabados.forEach(i => i.classList.remove('selected'));
+    item.classList.add('selected');
+    state.acabado = item.dataset.acabado;
+    console.log('Estado del acabado actualizado:', state.acabado);
+    actualizarResumen();
+    validarFormulario();
+}
+
+// ==========================================
+// CÁLCULO DE MEDIDAS
+// ==========================================
+function calcularMedida(tipo, campo) {
+    const modulo = parseFloat(elementos[`${tipo}Modulo`]?.value) || 0;
+    const descuento = parseFloat(elementos[`${tipo}Descuento`]?.value) || 0;
+    const real = parseFloat(elementos[`${tipo}Real`]?.value) || 0;
+    
+    let nuevoReal = real;
+    
+    switch(campo) {
+        case 'modulo':
+        case 'descuento':
+            nuevoReal = modulo - descuento;
+            if (elementos[`${tipo}Real`]) {
+                // Mantener el valor incluso si es negativo para poder validarlo
+                elementos[`${tipo}Real`].value = nuevoReal !== 0 ? nuevoReal : '';
+            }
+            break;
+        case 'real':
+            const nuevoModulo = real + descuento;
+            if (elementos[`${tipo}Modulo`]) {
+                elementos[`${tipo}Modulo`].value = nuevoModulo !== 0 ? nuevoModulo : '';
+            }
+            break;
+    }
+    
+    // Guardar en estado (permitir negativos para validarlos)
+    state[`${tipo}Modulo`] = parseFloat(elementos[`${tipo}Modulo`]?.value) || 0;
+    state[`${tipo}Descuento`] = parseFloat(elementos[`${tipo}Descuento`]?.value) || 0;
+    
+    // Obtener el valor real del input (puede ser negativo)
+    const valorRealInput = elementos[`${tipo}Real`]?.value;
+    state[`${tipo}Real`] = valorRealInput !== '' ? parseFloat(valorRealInput) : 0;
+    
+    // Validar y mostrar mensaje
+    const validacion = validarMedida(tipo, state[`${tipo}Real`]);
+    mostrarValidacion(tipo, validacion);
+    
+    // Si el valor está bloqueado (menor que mínimo o negativo), no permitir continuar
+    if (validacion.bloqueado) {
+        // No calcular bisagras ni permitir avanzar
+        if (tipo === 'altura') {
+            if (elementos.bisagras) {
+                elementos.bisagras.disabled = true;
+                elementos.bisagras.value = '';
+            }
+            state.bisagrasCalculadas = 0;
+        }
+        // Marcar como inválido en el estado
+        state[`${tipo}Valido`] = false;
+    } else {
+        // Si es altura y es válida, calcular bisagras
+        if (tipo === 'altura' && validacion.valido && state[`${tipo}Real`] > 0) {
+            calcularBisagrasAutomaticas();
+        } else if (tipo === 'altura') {
+            if (elementos.bisagras) {
+                elementos.bisagras.disabled = true;
+                elementos.bisagras.value = '';
+            }
+            state.bisagrasCalculadas = 0;
+        }
+    }
+    
+    actualizarResumen();
+    validarFormulario();
+}
+
+// ==========================================
+// VALIDACIÓN DE MEDIDAS
+// ==========================================
+function validarMedida(tipo, valor) {
+    const modelo = CONFIG.modelos[state.modelo];
+    
+    // Si no hay modelo seleccionado, mostrar mensaje informativo
+    if (!modelo) {
+        return { 
+            valido: false, 
+            mensaje: '← Selecciona un modelo primero', 
+            clase: 'info',
+            bloqueado: false
+        };
+    }
+    
+    const max = tipo === 'altura' ? modelo.maxAltura : modelo.maxAncho;
+    
+    // ERROR CRÍTICO: Valor negativo - BLOQUEAR (antes de comprobar si es 0)
+    if (valor < 0) {
+        return {
+            valido: false,
+            mensaje: `⛔ No se permiten valores negativos`,
+            clase: 'error',
+            bloqueado: true
+        };
+    }
+    
+    // Si no hay valor o es cero, mostrar rango válido
+    if (!valor || valor === 0) {
+        return { 
+            valido: false, 
+            mensaje: `Rango válido: ${modelo.Minimo}-${max} mm`, 
+            clase: 'info',
+            bloqueado: false
+        };
+    }
+    
+    // ERROR CRÍTICO: Menor que mínimo absoluto - BLOQUEAR
+    if (valor < modelo.Minimo) {
+        return {
+            valido: false,
+            mensaje: `⛔ Mínimo absoluto: ${modelo.Minimo} mm`,
+            clase: 'error',
+            bloqueado: true
+        };
+    }
+    
+    // ADVERTENCIA: Fuera de rango recomendado pero válido
+    if (valor > max) {
+        return {
+            valido: true, // Permitido pero con advertencia
+            mensaje: `⚠️ Supera máximo recomendado (${max} mm)`,
+            clase: 'advertencia',
+            bloqueado: false
+        };
+    }
+    
+    // VÁLIDO: Dentro del rango perfecto
+    return {
+        valido: true,
+        mensaje: `✓ Válido (${modelo.Minimo}-${max} mm)`,
+        clase: 'valido',
+        bloqueado: false
+    };
+}
+
+// ==========================================
+// MOSTRAR VALIDACIÓN
+// ==========================================
+function mostrarValidacion(tipo, resultado) {
+    const inputEl = elementos[`${tipo}Real`];
+    const mensajeEl = elementos[`${tipo}Mensaje`];
+    
+    if (!inputEl || !mensajeEl) return;
+    
+    // Quitar clases anteriores
+    inputEl.classList.remove('valido', 'advertencia', 'error', 'bloqueado', 'info');
+    
+    // Si está bloqueado, resetear el valor
+    if (resultado.bloqueado && state[`${tipo}Real`] > 0) {
+        // Mantener el valor pero marcarlo como error
+        inputEl.classList.add('bloqueado');
+    } else if (resultado.clase) {
+        // Aplicar clase normal
+        inputEl.classList.add(resultado.clase);
+    }
+    
+    // Mostrar mensaje
+    mensajeEl.textContent = resultado.mensaje;
+    mensajeEl.className = `medidas-mensaje ${resultado.clase}`;
+    
+    // Guardar estado de validación
+    state[`${tipo}Valido`] = resultado.valido && !resultado.bloqueado;
+}
+
+// ==========================================
+// CÁLCULO AUTOMÁTICO DE BISAGRAS
+// ==========================================
+function calcularBisagrasAutomaticas() {
+    const alturaReal = state.alturaReal;
+    const modelo = state.modelo;
+    
+    if (!alturaReal || alturaReal < 300 || !modelo) {
+        state.bisagrasCalculadas = 0;
+        return;
+    }
+    
+    let numBisagras = 2;
+    
+    if (alturaReal <= 900) {
+        numBisagras = 2;
+    } else if (alturaReal <= 1800) {
+        numBisagras = 3;
+    } else if (alturaReal <= 2400) {
+        numBisagras = 4;
+    } else if (alturaReal <= 2800 && modelo === '7995') {
+        numBisagras = 5;
+    } else {
+        numBisagras = 6;
+    }
+    
+    state.bisagrasCalculadas = numBisagras;
+    
+    // Habilitar y seleccionar en el combo
+    if (elementos.bisagras) {
+        elementos.bisagras.disabled = false;
+        const label = document.getElementById('bisagrasLabel');
+        if (label) label.classList.remove('disabled');
+        
+        if (elementos.bisagras.value === '') {
+            elementos.bisagras.value = numBisagras.toString();
+            state.bisagras = numBisagras.toString();
+        }
+        
+        if (elementos.bisagrasHint) {
+            elementos.bisagrasHint.textContent = `Recomendado: ${numBisagras} bisagras`;
+        }
+    }
+    
+    verificarBisagrasExtra();
+}
+
+// ==========================================
+// VERIFICAR BISAGRAS EXTRA
+// ==========================================
+function verificarBisagrasExtra() {
+    const seleccionadas = parseInt(elementos.bisagras?.value) || 0;
+    const nominal = state.bisagrasCalculadas || 0;
+    const advertencia = elementos.bisagrasAdvertencia;
+    
+    if (!advertencia) return;
+    
+    if (seleccionadas > nominal && nominal > 0) {
+        const extras = seleccionadas - nominal;
+        const precio = extras * CONFIG.precios.bisagra_extra;
+        advertencia.textContent = `ℹ️ ${extras} bisagra${extras > 1 ? 's' : ''} extra: +${precio.toFixed(2)} €`;
+    } else if (seleccionadas < nominal && seleccionadas >= CONFIG.precios.bisagra_minimas) {
+        const menos = nominal - seleccionadas;
+        advertencia.textContent = `⚠️ ${menos} bisagra${menos > 1 ? 's' : ''} menos del recomendado`;
+    } else if (seleccionadas < CONFIG.precios.bisagra_minimas) {
+        advertencia.textContent = `⚠️ Mínimo ${CONFIG.precios.bisagra_minimas} bisagras requeridas`;
+    } else {
+        advertencia.textContent = '';
+    }
+}
+
+// ==========================================
+// ACTUALIZACIÓN DE OPCIONES
+// ==========================================
+function actualizarCantidad(e) {
+    state.cantidad = parseInt(e.target.value) || 1;
+    actualizarResumen();
+    validarFormulario();
+}
+
+function actualizarBisagras(e) {
+    state.bisagras = e.target.value;
+    verificarBisagrasExtra();
+    actualizarResumen();
+    validarFormulario();
+}
+
+function actualizarTirador(e) {
+    state.tirador = e.target.checked;
+    
+    // Mostrar u ocultar el selector de tiradores
+    if (elementos.tiradoresSelector) {
+        if (state.tirador) {
+            elementos.tiradoresSelector.classList.add('visible');
+        } else {
+            elementos.tiradoresSelector.classList.remove('visible');
+            // Resetear selección
+            elementos.tiradoresCards.forEach(card => card.classList.remove('selected'));
+            state.tiradorTipo = null;
+        }
+    }
+    
+    actualizarResumen();
+    validarFormulario();
+}
+
+function seleccionarTirador(card) {
+    console.log('Seleccionando tirador:', card.dataset.tirador);
+    elementos.tiradoresCards.forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    state.tiradorTipo = card.dataset.tirador;
+    console.log('Tipo de tirador actualizado:', state.tiradorTipo);
+    actualizarResumen();
+}
+
+function actualizarVidrio(e) {
+    state.vidrioMontado = e.target.checked;
+    
+    if (elementos.colorVidrio) {
+        elementos.colorVidrio.disabled = !state.vidrioMontado;
+    }
+    if (elementos.colorVidrioLabel) {
+        elementos.colorVidrioLabel.classList.toggle('disabled', !state.vidrioMontado);
+        elementos.colorVidrioLabel.classList.toggle('active-label', state.vidrioMontado);
+    }
+    
+    if (!state.vidrioMontado) {
+        state.colorVidrio = '';
+        if (elementos.colorVidrio) elementos.colorVidrio.value = '';
+    }
+    
+    actualizarResumen();
+}
+
+function actualizarColorVidrio(e) {
+    state.colorVidrio = e.target.value;
+    actualizarResumen();
+}
+
+// ==========================================
+// ACTUALIZAR RESUMEN LATERAL
+// ==========================================
+function actualizarResumen() {
+    // Modelo
+    if (elementos.resumenModelo) {
+        elementos.resumenModelo.textContent = state.modelo 
+            ? `${state.modelo} - ${CONFIG.modelos[state.modelo]?.nombre || ''}`
+            : '-';
+    }
+    
+    // Acabado
+    if (elementos.resumenAcabado) {
+        elementos.resumenAcabado.textContent = state.acabado 
+            ? CONFIG.acabados[state.acabado]?.nombre || '-'
+            : '-';
+    }
+    
+    // Dimensiones
+    if (elementos.resumenDimensiones) {
+        const altReal = state.alturaReal || '-';
+        const ancReal = state.anchoReal || '-';
+        elementos.resumenDimensiones.textContent = (altReal !== '-' && ancReal !== '-')
+            ? `${altReal} × ${ancReal} mm`
+            : '-';
+    }
+    
+    // Cantidad
+    if (elementos.resumenCantidad) {
+        elementos.resumenCantidad.textContent = state.cantidad > 0 
+            ? `${state.cantidad} unidad${state.cantidad > 1 ? 'es' : ''}`
+            : '-';
+    }
+    
+    // Bisagras
+    actualizarResumenBisagras();
+    
+    // Tirador
+    if (elementos.resumenTirador) {
+        let textoTirador = 'No';
+        if (state.tirador && state.tiradorTipo) {
+            const tirador = CONFIG.tiradores[state.tiradorTipo];
+            const precio = CONFIG.precios[`Tirador_${state.tiradorTipo}`];
+            textoTirador = `Sí (${tirador.medidas} - ${precio.toFixed(2)} €)`;
+        } else if (state.tirador) {
+            textoTirador = 'Sí (sin seleccionar)';
+        }
+        elementos.resumenTirador.textContent = textoTirador;
+    }
+    
+    // Vidrio
+    if (elementos.resumenVidrio) {
+        let texto = state.vidrioMontado ? 'Sí' : 'No';
+        if (state.vidrioMontado && state.colorVidrio) {
+            texto += ` (${formatearColorVidrio(state.colorVidrio)})`;
+        }
+        elementos.resumenVidrio.textContent = texto;
+    }
+}
+
+function actualizarResumenBisagras() {
+    if (!elementos.resumenBisagras) return;
+    
+    const bisagrasSeleccionadas = parseInt(state.bisagras) || 0;
+    const bisagrasNominal = state.bisagrasCalculadas || 0;
+    
+    let texto = '-';
+    let extraTexto = '';
+    
+    if (bisagrasSeleccionadas > 0) {
+        texto = bisagrasSeleccionadas.toString();
+        
+        // Calcular extras y mostrar en el resumen
+        if (bisagrasNominal > 0 && bisagrasSeleccionadas > bisagrasNominal) {
+            const extras = bisagrasSeleccionadas - bisagrasNominal;
+            const extraPrecio = extras * CONFIG.precios.bisagra_extra;
+            extraTexto = `+${extras} extra${extras > 1 ? 's' : ''} (+${extraPrecio.toFixed(2)} €)`;
+        }
+    }
+    
+    elementos.resumenBisagras.textContent = texto;
+    
+    if (elementos.resumenBisagrasExtra) {
+        elementos.resumenBisagrasExtra.textContent = extraTexto;
+    }
+}
+
+function formatearColorVidrio(color) {
+    const colores = {
+        'transparente': 'Transparente',
+        'mate': 'Mate',
+        'bronce': 'Bronce',
+        'gris': 'Gris',
+        'grisoscuro': 'Gris oscuro',
+        'especial': 'Especial'
+    };
+    return colores[color] || color;
+}
+
+// ==========================================
+// VALIDACIÓN DEL FORMULARIO
+// ==========================================
+function validarFormulario() {
+    const bisagrasNum = parseInt(state.bisagras) || 0;
+    const bisagrasValidas = bisagrasNum >= CONFIG.precios.bisagra_minimas;
+    
+    const alturaValida = state.alturaValido !== false && state.alturaReal > 0;
+    const anchoValida = state.anchoValido !== false && state.anchoReal > 0;
+    
+    // Si tirador está activado, debe tener tipo seleccionado
+    const tiradorValido = !state.tirador || (state.tirador && state.tiradorTipo);
+    
+    const completo = 
+        state.modelo !== null &&
+        state.acabado !== null &&
+        alturaValida &&
+        anchoValida &&
+        state.cantidad >= 1 &&
+        bisagrasValidas &&
+        tiradorValido;
+    
+    if (elementos.btnCalcular) {
+        elementos.btnCalcular.disabled = !completo;
+    }
+    if (elementos.btnFabricar) {
+    elementos.btnFabricar.disabled = !completo;
+    }
+}
+
+// ==========================================
+// BOTÓN CALCULAR
+// ==========================================
+function calcularPresupuesto() {
+    // Calcular precio del tirador
+    let precioTirador = 0;
+    if (state.tirador && state.tiradorTipo) {
+        precioTirador = CONFIG.precios[`Tirador_${state.tiradorTipo}`];
+    }
+    
+    // Calcular precio bisagras extra
+    let precioBisagrasExtra = 0;
+    const bisagrasSeleccionadas = parseInt(state.bisagras) || 0;
+    const bisagrasNominal = state.bisagrasCalculadas || 0;
+    if (bisagrasSeleccionadas > bisagrasNominal && bisagrasNominal > 0) {
+        const extras = bisagrasSeleccionadas - bisagrasNominal;
+        precioBisagrasExtra = extras * CONFIG.precios.bisagra_extra;
+    }
+    
+    const datosCompletos = {
+        ...state,
+        fecha: new Date().toISOString(),
+        configuracionValida: true,
+        precios: {
+            tirador: precioTirador,
+            bisagrasExtra: precioBisagrasExtra,
+            total: precioTirador + precioBisagrasExtra // Aquí se añadirán más conceptos
+        },
+        detalles: {
+            modeloNombre: CONFIG.modelos[state.modelo]?.nombre || '',
+            acabadoNombre: CONFIG.acabados[state.acabado]?.nombre || '',
+            tiradorNombre: state.tiradorTipo ? CONFIG.tiradores[state.tiradorTipo].nombre : 'Sin tirador',
+            bisagrasNominales: bisagrasNominal,
+            bisagrasExtras: bisagrasSeleccionadas > bisagrasNominal ? bisagrasSeleccionadas - bisagrasNominal : 0
+        }
+    };
+    
+    console.log('=== DATOS COMPLETOS PARA CÁLCULO ===');
+    console.log('Datos preparados para fase 2:', datosCompletos);
+    console.log('Precio tirador:', precioTirador.toFixed(2), '€');
+    console.log('Precio bisagras extra:', precioBisagrasExtra.toFixed(2), '€');
+    console.log('Precios configurados:', CONFIG.precios);
+    console.log('===================================');
+    
+    alert(`Configuración guardada correctamente.\n\nResumen:\n- Tirador: ${precioTirador.toFixed(2)} €\n- Bisagras extra: ${precioBisagrasExtra.toFixed(2)} €\n\nPreparando planos de fabricación...`);
+}
+
+// ==========================================
+// BOTÓN FABRICACIÓN
+// ==========================================
+function pasarAFabricacion() {
+    // Aquí irá la lógica para ir a hojas de fabricación
+    console.log('Pasando a fabricación...');
+    alert('Preparando hojas de fabricación...');
+}
+
+
+
+
+
+
+// ==========================================
+// BOTÓN RESET
+// ==========================================
+function resetearDatos() {
+    if (!confirm('¿Estás seguro de que quieres borrar todos los datos?')) {
+        return;
+    }
+    
+    // Resetear estado
+    state.modelo = null;
+    actualizarVistaPrevia();  // Añade esta línea
+    state.acabado = null;
+    state.alturaModulo = 0;
+    state.alturaDescuento = 2;
+    state.alturaReal = 0;
+    state.alturaValido = null;
+    state.anchoModulo = 0;
+    state.anchoDescuento = 2;
+    state.anchoReal = 0;
+    state.anchoValido = null;
+    state.cantidad = 1;
+    state.bisagras = '';
+    state.bisagrasCalculadas = 0;
+    state.tirador = false;
+    state.vidrioMontado = false;
+    state.colorVidrio = '';
+    
+    // Resetear UI
+    elementos.modelos.forEach(c => c.classList.remove('selected'));
+    elementos.acabados.forEach(i => i.classList.remove('selected'));
+    
+    if (elementos.alturaModulo) elementos.alturaModulo.value = '';
+    if (elementos.alturaDescuento) elementos.alturaDescuento.value = '2';
+    if (elementos.alturaReal) elementos.alturaReal.value = '';
+    if (elementos.alturaMensaje) elementos.alturaMensaje.textContent = '';
+    if (elementos.anchoModulo) elementos.anchoModulo.value = '';
+    if (elementos.anchoDescuento) elementos.anchoDescuento.value = '2';
+    if (elementos.anchoReal) elementos.anchoReal.value = '';
+    if (elementos.anchoMensaje) elementos.anchoMensaje.textContent = '';
+    
+    if (elementos.bisagras) {
+        elementos.bisagras.disabled = true;
+        elementos.bisagras.value = '';
+    }
+    
+    const bisagrasLabel = document.getElementById('bisagrasLabel');
+    if (bisagrasLabel) bisagrasLabel.classList.add('disabled');
+    
+    if (elementos.bisagrasHint) {
+        elementos.bisagrasHint.textContent = 'Complete la altura real para activar';
+    }
+    
+    if (elementos.bisagrasAdvertencia) {
+        elementos.bisagrasAdvertencia.textContent = '';
+    }
+    
+    if (elementos.cantidad) elementos.cantidad.value = '1';
+    if (elementos.tirador) elementos.tirador.checked = false;
+    if (elementos.tiradoresSelector) {
+        elementos.tiradoresSelector.classList.remove('visible');
+    }
+    elementos.tiradoresCards.forEach(card => card.classList.remove('selected'));
+    state.tiradorTipo = null;
+    
+    if (elementos.vidrioMontado) {
+        elementos.vidrioMontado.checked = false;
+        elementos.vidrioMontado.dispatchEvent(new Event('change'));
+    }
+    
+    actualizarResumen();
+    validarFormulario();
+}
+
+// ==========================================
+// INICIAR APLICACIÓN
+// ==========================================
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+</script>
+
+</body>
+</html>
