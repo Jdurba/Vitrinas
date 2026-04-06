@@ -531,6 +531,17 @@
             opacity: 0.6;
         }
 
+        .checkbox-item.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .checkbox-item.disabled .checkmark {
+            background: #e0e0e0;
+            border-color: #ccc;
+        }
+
         label.active-label {
             color: var(--color-primary);
             opacity: 1;
@@ -600,14 +611,9 @@
             font-weight: 600;
         }
 
-        #bisagras:disabled {
-            background-color: #f5f5f5;
-            color: #999;
-            cursor: not-allowed;
-        }
-
         #bisagrasLabel.disabled {
             color: #999;
+            opacity: 0.6;
         }
 
         .bisagras-advertencia {
@@ -616,6 +622,89 @@
             color: var(--color-accent);
             margin-top: 5px;
             min-height: 18px;
+        }
+
+        .bisagras-widget {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            background: #f9f9f9;
+            min-height: 48px;
+        }
+
+        .bisagras-widget.activo {
+            background: white;
+            border-color: #ccc;
+        }
+
+        .bisagras-nominal-info {
+            flex: 1;
+            font-size: 0.8rem;
+            color: var(--color-text-light);
+            line-height: 1.2;
+        }
+
+        .bisagras-nominal-info.activo {
+            color: var(--color-text);
+        }
+
+        .bisagras-counter {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .bisagras-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            background: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: var(--color-text-light);
+            line-height: 1;
+        }
+
+        .bisagras-btn:hover:not(:disabled) {
+            border-color: var(--color-secondary);
+            color: var(--color-secondary);
+            background: #ebf5fb;
+        }
+
+        .bisagras-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .bisagras-num {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            min-width: 26px;
+            text-align: center;
+        }
+
+        .bisagras-num.inactivo {
+            color: #ccc;
+            font-size: 1rem;
+        }
+
+        .bisagras-extra-precio {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--color-secondary);
+            font-weight: 600;
+            margin-top: 4px;
+            min-height: 16px;
         }
 
         .opciones-form {
@@ -865,6 +954,35 @@
                 margin-left: 0;
             }
         }
+
+        /* Botón volver al menú */
+        #cab-btn.btn-grad {
+            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 10px 18px;
+            text-decoration: none;
+            transition: opacity 0.3s, transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        #cab-btn.btn-grad:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        @media (max-width: 600px) {
+            #cab-btn.btn-grad {
+                font-size: 0.8rem;
+                padding: 8px 12px;
+            }
+        }
     </style>
 </head>
 
@@ -877,6 +995,7 @@
                     alt="Adinor Logo" 
                     class="header-logo">
                 <h1>Configurador de Vitrinas de Aluminio</h1>
+                <button id="cab-btn" class="btn-grad" onclick="window.location.href='https://jdurba.github.io/General/index.html'">← Volver al menú</button>
             </div>
         </div>
     </header>
@@ -988,7 +1107,7 @@
                                 onerror="this.style.display='none'">
                             <div class="modelo-placeholder">BT100</div>
                             <div class="modelo-codigo">BT100</div>
-                            <div class="modelo-desc">Perfil BT100</div>
+                            <div class="modelo-desc">Perfil BT-10</div>
                         </div>
                         
                         <div class="modelo-card" data-modelo="BT110">
@@ -998,10 +1117,44 @@
                                 onerror="this.style.display='none'">
                             <div class="modelo-placeholder">BT110</div>
                             <div class="modelo-codigo">BT110</div>
-                            <div class="modelo-desc">Perfil BT110</div>
+                            <div class="modelo-desc">Perfil BT-60</div>
                         </div>
+
+                        <div class="modelo-card" data-modelo="KABI">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/Kabi_cotas.jpg" 
+                                alt="Modelo KABI" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">KABI</div>
+                            <div class="modelo-codigo">KABI</div>
+                            <div class="modelo-desc">Perfiles KABI</div>
+                        </div>
+
+                        <div class="modelo-card" data-modelo="HAVA">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/Hava_cotas.jpg" 
+                                alt="Modelo HAVA" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">HAVA</div>
+                            <div class="modelo-codigo">HAVA</div>
+                            <div class="modelo-desc">Perfiles HAVA</div>
+                        </div>
+
+                        <div class="modelo-card" data-modelo="HAVASP">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/HavaSP_cotas.jpg" 
+                                alt="Modelo HAVA" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">HAVA S/P</div>
+                            <div class="modelo-codigo">HAVA S/P</div>
+                            <div class="modelo-desc">Perfiles HAVA S/P</div>
+                        </div>
+
+
                     </div>
                 </div>
+
+
 
                 <!-- Sección 2: Selección de Acabado -->
                 <div class="section-card">
@@ -1020,23 +1173,88 @@
                             </div>
                         </div>
                         <div class="acabado-item" data-acabado="B">
-                            <div class="acabado-muestra" style="background: #FFFFFF; border: 2px solid #ddd;"></div>
+                            <div class="acabado-muestra" style="background: linear-gradient(135deg, #FFFFFF 0%, #f0f0f0 40%, #FFFFFF 60%, #e8e8e8 100%); border: 1px solid #ddd;"></div>
                             <div class="acabado-info">
-                                <div class="acabado-nombre">Lacado Blanco (L.B)</div>
+                                <div class="acabado-nombre">Lacado Blanco Brillo (L.B)</div>
                             </div>
                         </div>
+
+                        <div class="acabado-item" data-acabado="BM03">
+                            <div class="acabado-muestra" style="background: radial-gradient(ellipse at 38% 35%, #ffffff 0%, #f2f2f0 45%, #e4e4e2 100%); border: 1px solid #ddd;"></div>
+                            <div class="acabado-info">
+                                <div class="acabado-nombre">Blanco Mate 9003 (L.BM03)</div>
+                            </div>
+                        </div>
+
                         <div class="acabado-item" data-acabado="NM">
                             <div class="acabado-muestra" style="background: #1a1a1a;"></div>
                             <div class="acabado-info">
                                 <div class="acabado-nombre">Lacado Negro Mate (L.NM)</div>
                             </div>
                         </div>
+
+                        <div class="acabado-item" data-acabado="BR">
+                            <div class="acabado-muestra" style="background: #8b6914;"></div>
+                            <div class="acabado-info">
+                                <div class="acabado-nombre">Bronce Cepillado (A.BR)</div>
+                            </div>
+                        </div>
+
+                        <div class="acabado-item" data-acabado="RB">
+                            <div class="acabado-muestra" style="
+                                background:
+                                    repeating-linear-gradient(92deg,
+                                        rgba(255,255,255,0.0) 0px,
+                                        rgba(255,255,255,0.22) 1.5px,
+                                        rgba(0,0,0,0.12) 3px,
+                                        rgba(255,255,255,0.0) 5px,
+                                        rgba(0,0,0,0.15) 7px,
+                                        rgba(255,255,255,0.18) 8.5px,
+                                        rgba(255,255,255,0.0) 10px,
+                                        rgba(0,0,0,0.08) 13px,
+                                        rgba(255,255,255,0.0) 15px,
+                                        rgba(255,255,255,0.20) 17px,
+                                        rgba(0,0,0,0.13) 19px,
+                                        rgba(255,255,255,0.0) 22px
+                                    ),
+                                    linear-gradient(168deg, #e8b030 0%, #c38d05 35%, #9a6e03 70%, #7a5202 100%);
+                            "></div>
+                            <div class="acabado-info">
+                                <div class="acabado-nombre">Chapa Roble (C.RB)</div>
+                            </div>
+                        </div>
+
+                        <div class="acabado-item" data-acabado="NG">
+                            <div class="acabado-muestra" style="
+                                background:
+                                    repeating-linear-gradient(90deg,
+                                        rgba(255,255,255,0.0) 0px,
+                                        rgba(255,255,255,0.18) 1.5px,
+                                        rgba(0,0,0,0.18) 3px,
+                                        rgba(255,255,255,0.0) 5px,
+                                        rgba(0,0,0,0.20) 8px,
+                                        rgba(255,255,255,0.14) 9.5px,
+                                        rgba(255,255,255,0.0) 12px,
+                                        rgba(0,0,0,0.12) 15px,
+                                        rgba(255,255,255,0.16) 17px,
+                                        rgba(255,255,255,0.0) 20px,
+                                        rgba(0,0,0,0.16) 23px,
+                                        rgba(255,255,255,0.0) 26px
+                                    ),
+                                    linear-gradient(168deg, #6b3a10 0%, #3b2301 40%, #261500 75%, #180d00 100%);
+                            "></div>
+                            <div class="acabado-info">
+                                <div class="acabado-nombre">Chapa Nogal (C.NG)</div>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
 
-                <!-- Sección 3: Dimensiones y Opciones -->
+                <!-- Sección 3: Dimensiones y cantidades -->
                 <div class="section-card">
-                    <h2 class="section-title">3. Dimensiones y Opciones</h2>
+                    <h2 class="section-title">3. Dimensiones y cantidades</h2>
 
                     <!-- Tabla de medidas estilo Excel -->
                     <div class="medidas-container">
@@ -1077,21 +1295,20 @@
                         </div>
                     </div>
 
-                    <!-- Resto de opciones -->
+                    <!-- Bisagras y cantidad -->
                     <div class="opciones-form">
-                        
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="bisagras" id="bisagrasLabel">Número de Bisagras</label>
-                                <select id="bisagras" name="bisagras" disabled>
-                                    <option value="">Introduce altura real primero</option>
-                                    <option value="2">2 Bisagras (300-900 mm)</option>
-                                    <option value="3">3 Bisagras (901-1800 mm)</option>
-                                    <option value="4">4 Bisagras (1801-2400 mm)</option>
-                                    <option value="5">5 Bisagras (2401-2800 mm - Solo 7995)</option>
-                                    <option value="6">6 Bisagras (Máximo)</option>
-                                </select>
-                                <span class="input-hint" id="bisagrasHint">Complete la altura real para activar</span>
+                                <label id="bisagrasLabel" class="disabled">Número de Bisagras</label>
+                                <div class="bisagras-widget" id="bisagrasWidget">
+                                    <div class="bisagras-nominal-info" id="bisagrasNominalInfo">Introduce altura real primero</div>
+                                    <div class="bisagras-counter">
+                                        <button class="bisagras-btn" id="bisagrasMenos" disabled>−</button>
+                                        <span class="bisagras-num inactivo" id="bisagrasNum">—</span>
+                                        <button class="bisagras-btn" id="bisagrasmas" disabled>+</button>
+                                    </div>
+                                </div>
+                                <span class="bisagras-extra-precio" id="bisagrasExtraPrecio"></span>
                                 <span class="bisagras-advertencia" id="bisagrasAdvertencia"></span>
                             </div>
 
@@ -1100,9 +1317,15 @@
                                 <input type="number" id="cantidad" name="cantidad" min="1" value="1">
                             </div>
                         </div>
+                    </div>
+                </div>
 
+                <!-- Sección 4: Opciones adicionales -->
+                <div class="section-card">
+                    <h2 class="section-title">4. Opciones adicionales</h2>
+
+                    <div class="opciones-form">
                         <div class="form-group full-width opciones-adicionales">
-                            <label>Opciones adicionales</label>
                             <div class="checkbox-group">
                                 <label class="checkbox-item">
                                     <input type="checkbox" id="tirador" name="tirador">
@@ -1110,7 +1333,7 @@
                                     Tirador mecanizado
                                 </label>
                                 
-                                <!-- Selector de tiradores (justo después del checkbox) -->
+                                <!-- Selector de tiradores -->
                                 <div class="tiradores-selector" id="tiradoresSelector">
                                     <div class="tiradores-titulo">Selecciona el tipo de tirador:</div>
                                     <div class="tiradores-grid">
@@ -1239,27 +1462,45 @@ const CONFIG = {
     precios: {
         Tirador_126x35: 7.62,
         Tirador_37x16: 5.25,
-        bisagra_extra: 5.00,
-        bisagra_minimas: 2
+        bisagra_extra: 5.00
     },
+    bisagras_rangos: [
+        { hasta: 900,  num: 2 },
+        { hasta: 1600, num: 3 },
+        { hasta: 2000, num: 4 },
+        { hasta: 2500, num: 5 },
+        { hasta: 2800, num: 6 }
+    ],
+    bisagras_B1_defecto: 100,
+    bisagras_B2_defecto: 100,
+    bisagras_B_minimo:    70,
+    bisagras_C_minimo:    80,
+    bisagras_max_global:   6,
     modelos: {
-        '7991': { nombre: '20x45 P8', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
-        '7994': { nombre: '20x45 P4', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
-        '7995': { nombre: '35x45 P8', maxAltura: 2800, maxAncho: 700, Minimo: 150 },
-        '7990': { nombre: '20x45 P20', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
-        '7998': { nombre: '20x45 P45', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
-        '7993': { nombre: '19x21', maxAltura: 2400, maxAncho: 600, Minimo: 150 },
-        '7996': { nombre: '20x18 P8', maxAltura: 2400, maxAncho: 600, Minimo: 150 },
-        '7999': { nombre: '16x60 S/P', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
-        '79916': { nombre: '20x56 C/P', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
-        'BT100': { nombre: 'Perfil BT100', maxAltura: 2600, maxAncho: 700, Minimo: 150 },
-        'BT110': { nombre: 'Perfil BT110', maxAltura: 2700, maxAncho: 700, Minimo: 150 }
+        '7991':   { nombre: '20x45 P8',      maxAltura: 2400, maxAncho: 700, Minimo: 150, imagen: '7991',   acabados: ['PM','P','B','BM03','NM','RB','NG'] },
+        '7994':   { nombre: '20x45 P4',      maxAltura: 2400, maxAncho: 700, Minimo: 150, imagen: '7994',   acabados: ['PM','P','B','NM'] },
+        '7995':   { nombre: '35x45 P8',      maxAltura: 2800, maxAncho: 700, Minimo: 150, imagen: '7995',   acabados: ['PM','P','B','BM03','NM'] },
+        '7990':   { nombre: '20x45 P20',     maxAltura: 2400, maxAncho: 700, Minimo: 150, imagen: '7990',   acabados: ['PM','P','B','NM'] },
+        '7998':   { nombre: '20x45 P45',     maxAltura: 2400, maxAncho: 700, Minimo: 150, imagen: '7998',   acabados: ['PM','P','B','NM','RB'] },
+        '7993':   { nombre: '19x21',         maxAltura: 2400, maxAncho: 600, Minimo: 150, imagen: '7993',   acabados: ['PM','P','B','NM','RB','NG'] },
+        '7996':   { nombre: '20x18 P8',      maxAltura: 2400, maxAncho: 600, Minimo: 150, imagen: '7996',   acabados: ['PM','P','B','NM','RB','NG'] },
+        '7999':   { nombre: '16x60 S/P',     maxAltura: 2400, maxAncho: 700, Minimo: 150, imagen: '7999',   acabados: ['PM','P','B','NM'] },
+        '79916':  { nombre: '20x56 C/P',     maxAltura: 2400, maxAncho: 700, Minimo: 150, imagen: '79916',  acabados: ['PM','P','B','NM'] },
+        'BT100':  { nombre: 'Perfil BT100',  maxAltura: 2600, maxAncho: 700, Minimo: 150, imagen: 'BT100',  acabados: ['PM','P','B','NM'] },
+        'BT110':  { nombre: 'Perfil BT110',  maxAltura: 2700, maxAncho: 700, Minimo: 150, imagen: 'BT110',  acabados: ['PM','P','B','NM'] },
+        'KABI':   { nombre: 'Perfiles KABI', maxAltura: 2400, maxAncho: 900, Minimo: 150, imagen: 'Kabi',   acabados: ['BM03','NM','BR'], bisagras_fijas: 2 },
+        'HAVA':   { nombre: 'Perfiles HAVA', maxAltura: 2400, maxAncho: 900, Minimo: 150, imagen: 'Hava',   acabados: ['BM03','NM','BR'], bisagras_fijas: 2 },
+        'HAVASP': { nombre: 'HAVA S/P',      maxAltura: 2400, maxAncho: 900, Minimo: 150, imagen: 'HavaSP', acabados: ['BM03','NM','BR'], bisagras_fijas: 2 }
     },
     acabados: {
-        'PM': { nombre: 'Plata Mate (A.PM)' },
-        'P': { nombre: 'Plata Brillo (A.P)' },
-        'B': { nombre: 'Lacado Blanco (L.B)' },
-        'NM': { nombre: 'Lacado Negro Mate (L.NM)' }
+        'PM':   { nombre: 'Plata Mate (A.PM)' },
+        'P':    { nombre: 'Plata Brillo (A.P)' },
+        'B':    { nombre: 'Lacado Blanco Brillo (L.B)' },
+        'BM03': { nombre: 'Blanco Mate 9003 (L.BM03)' },
+        'NM':   { nombre: 'Lacado Negro Mate (L.NM)' },
+        'BR':   { nombre: 'Bronce Cepillado (A.BR)' },
+        'RB':   { nombre: 'Chapa Roble (C.RB)' },
+        'NG':   { nombre: 'Chapa Nogal (C.NG)' }
     },
     tiradores: {
         '126x35': { 
@@ -1290,10 +1531,16 @@ const state = {
     anchoReal: 0,
     anchoValido: null,
     cantidad: 1,
-    bisagras: '',
-    bisagrasCalculadas: 0,
+    bisagrasNominal: 0,      // Calculado automáticamente según altura
+    bisagrasExtras: 0,       // Añadidas por el cliente (+precio)
+    bisagrasTotal: 0,        // bisagrasNominal + bisagrasExtras
+    bisagrasMaxTecnico: 0,   // Máximo físicamente posible
+    bisagrasB1: 100,         // Distancia borde superior (mm)
+    bisagrasB2: 100,         // Distancia borde inferior (mm)
+    bisagrasCalculadas: 0,   // Alias de bisagrasNominal (compatibilidad)
+    bisagras: '',            // Alias de bisagrasTotal como string (compatibilidad)
     tirador: false,
-    tiradorTipo: null, // '126x35' o '37x16'
+    tiradorTipo: null,
     vidrioMontado: false,
     colorVidrio: ''
 };
@@ -1313,8 +1560,12 @@ const elementos = {
     anchoReal: document.getElementById('anchoReal'),
     anchoMensaje: document.getElementById('anchoMensaje'),
     cantidad: document.getElementById('cantidad'),
-    bisagras: document.getElementById('bisagras'),
-    bisagrasHint: document.getElementById('bisagrasHint'),
+    bisagrasWidget: document.getElementById('bisagrasWidget'),
+    bisagrasNominalInfo: document.getElementById('bisagrasNominalInfo'),
+    bisagrasNum: document.getElementById('bisagrasNum'),
+    bisagrasMenos: document.getElementById('bisagrasMenos'),
+    bisagrasmas: document.getElementById('bisagrasmas'),
+    bisagrasExtraPrecio: document.getElementById('bisagrasExtraPrecio'),
     bisagrasAdvertencia: document.getElementById('bisagrasAdvertencia'),
     tirador: document.getElementById('tirador'),
     tiradoresSelector: document.getElementById('tiradoresSelector'),
@@ -1332,7 +1583,7 @@ const elementos = {
     resumenVidrio: document.getElementById('resumenVidrio'),
     precioTotal: document.getElementById('precioTotal'),
     btnCalcular: document.getElementById('btnCalcular'),
-    btnFabricar: document.getElementById('btnFabricar'), 
+    btnFabricar: document.getElementById('btnFabricar'),
     btnReset: document.getElementById('btnReset')
 };
 
@@ -1368,7 +1619,8 @@ function init() {
     
     // Eventos: Opciones
     elementos.cantidad?.addEventListener('change', actualizarCantidad);
-    elementos.bisagras?.addEventListener('change', actualizarBisagras);
+    elementos.bisagrasMenos?.addEventListener('click', () => cambiarBisagrasExtra(-1));
+    elementos.bisagrasmas?.addEventListener('click', () => cambiarBisagrasExtra(+1));
     elementos.tirador?.addEventListener('change', actualizarTirador);
     
     // Eventos: Selector de tiradores
@@ -1424,6 +1676,12 @@ function seleccionarModelo(card) {
     // Actualizar vista previa del perfil
     actualizarVistaPrevia();
     
+    // Filtrar acabados compatibles con este modelo
+    filtrarAcabadosPorModelo();
+
+    // Bloquear tirador si el modelo no lo permite (KABI, HAVA, HAVASP)
+    actualizarDisponibilidadTirador();
+    
     // Mostrar rangos válidos en los mensajes si no hay medidas
     if (!state.alturaReal || state.alturaReal === 0) {
         const validacionAltura = validarMedida('altura', 0);
@@ -1442,7 +1700,21 @@ function seleccionarModelo(card) {
         const validacionAncho = validarMedida('ancho', state.anchoReal);
         mostrarValidacion('ancho', validacionAncho);
     }
-    
+
+    // Recalcular bisagras para el nuevo perfil.
+    // calcularBisagrasAutomaticas() ya maneja internamente los perfiles
+    // con bisagras_fijas (KABI, HAVA, HAVASP) y los de rango libre.
+    if (state.alturaReal > 0) {
+        const vAltura = validarMedida('altura', state.alturaReal);
+        if (vAltura.valido && !vAltura.bloqueado) {
+            calcularBisagrasAutomaticas();
+        } else {
+            resetearWidgetBisagras();
+        }
+    } else {
+        resetearWidgetBisagras();
+    }
+
     actualizarResumen();
     validarFormulario();
 }
@@ -1456,7 +1728,9 @@ function actualizarVistaPrevia() {
     if (!previewContainer) return;
     
     if (state.modelo) {
-        const imagenUrl = `https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/${state.modelo}_cotas.jpg`;
+        const modeloConfig = CONFIG.modelos[state.modelo];
+        const nombreImagen = modeloConfig?.imagen || state.modelo;
+        const imagenUrl = `https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/${nombreImagen}_cotas.jpg`;
         
         previewContainer.innerHTML = `
             <img src="${imagenUrl}" 
@@ -1471,6 +1745,32 @@ function actualizarVistaPrevia() {
             </div>
         `;
     }
+}
+
+
+// ==========================================
+// FILTRAR ACABADOS POR MODELO
+// ==========================================
+function filtrarAcabadosPorModelo() {
+    const modeloConfig = CONFIG.modelos[state.modelo];
+    const acabadosPermitidos = modeloConfig?.acabados || Object.keys(CONFIG.acabados);
+
+    elementos.acabados.forEach(item => {
+        const acabado = item.dataset.acabado;
+        const disponible = acabadosPermitidos.includes(acabado);
+
+        item.style.opacity = disponible ? '1' : '0.3';
+        item.style.pointerEvents = disponible ? 'auto' : 'none';
+        item.title = disponible ? '' : 'No disponible para este perfil';
+
+        // Si el acabado seleccionado queda fuera, deseleccionarlo
+        if (!disponible && state.acabado === acabado) {
+            item.classList.remove('selected');
+            state.acabado = null;
+            actualizarResumen();
+            validarFormulario();
+        }
+    });
 }
 
 
@@ -1526,29 +1826,15 @@ function calcularMedida(tipo, campo) {
     // Validar y mostrar mensaje
     const validacion = validarMedida(tipo, state[`${tipo}Real`]);
     mostrarValidacion(tipo, validacion);
-    
-    // Si el valor está bloqueado (menor que mínimo o negativo), no permitir continuar
+
     if (validacion.bloqueado) {
-        // No calcular bisagras ni permitir avanzar
-        if (tipo === 'altura') {
-            if (elementos.bisagras) {
-                elementos.bisagras.disabled = true;
-                elementos.bisagras.value = '';
-            }
-            state.bisagrasCalculadas = 0;
-        }
-        // Marcar como inválido en el estado
+        if (tipo === 'altura') resetearWidgetBisagras();
         state[`${tipo}Valido`] = false;
     } else {
-        // Si es altura y es válida, calcular bisagras
         if (tipo === 'altura' && validacion.valido && state[`${tipo}Real`] > 0) {
             calcularBisagrasAutomaticas();
         } else if (tipo === 'altura') {
-            if (elementos.bisagras) {
-                elementos.bisagras.disabled = true;
-                elementos.bisagras.value = '';
-            }
-            state.bisagrasCalculadas = 0;
+            resetearWidgetBisagras();
         }
     }
     
@@ -1656,70 +1942,176 @@ function mostrarValidacion(tipo, resultado) {
 // CÁLCULO AUTOMÁTICO DE BISAGRAS
 // ==========================================
 function calcularBisagrasAutomaticas() {
-    const alturaReal = state.alturaReal;
-    const modelo = state.modelo;
-    
-    if (!alturaReal || alturaReal < 300 || !modelo) {
-        state.bisagrasCalculadas = 0;
+    const altura = state.alturaReal;
+    const modeloConfig = CONFIG.modelos[state.modelo];
+
+    if (!altura || altura <= 0 || !modeloConfig) {
+        resetearWidgetBisagras();
         return;
     }
-    
-    let numBisagras = 2;
-    
-    if (alturaReal <= 900) {
-        numBisagras = 2;
-    } else if (alturaReal <= 1800) {
-        numBisagras = 3;
-    } else if (alturaReal <= 2400) {
-        numBisagras = 4;
-    } else if (alturaReal <= 2800 && modelo === '7995') {
-        numBisagras = 5;
+
+    // Perfiles con bisagras fijas (KABI, HAVA, HAVASP)
+    if (modeloConfig.bisagras_fijas) {
+        state.bisagrasNominal     = modeloConfig.bisagras_fijas;
+        state.bisagrasExtras      = 0;
+        state.bisagrasMaxTecnico  = modeloConfig.bisagras_fijas;
+        state.bisagrasCalculadas  = modeloConfig.bisagras_fijas;
+        state.bisagrasTotal       = modeloConfig.bisagras_fijas;
+        state.bisagras            = String(modeloConfig.bisagras_fijas);
+        renderWidgetBisagras(true);
+        return;
+    }
+
+    // Nominal según rangos
+    let nominal = 2;
+    for (const rango of CONFIG.bisagras_rangos) {
+        if (altura <= rango.hasta) { nominal = rango.num; break; }
+        nominal = rango.num;
+    }
+
+    // Máximo técnico: min(6, floor((altura - B1 - B2) / C_min) + 2)
+    const B1 = CONFIG.bisagras_B1_defecto;
+    const B2 = CONFIG.bisagras_B2_defecto;
+    const Cmin = CONFIG.bisagras_C_minimo;
+    const maxTecnico = Math.min(
+        CONFIG.bisagras_max_global,
+        Math.floor((altura - B1 - B2) / Cmin) + 2
+    );
+
+    state.bisagrasNominal    = nominal;
+    state.bisagrasExtras     = 0;
+    state.bisagrasMaxTecnico = Math.max(nominal, maxTecnico);
+    state.bisagrasTotal      = nominal;
+    state.bisagrasCalculadas = nominal;
+    state.bisagras           = String(nominal);
+
+    renderWidgetBisagras(false);
+}
+
+function renderWidgetBisagras(fijas) {
+    const { bisagrasNominal, bisagrasExtras, bisagrasMaxTecnico, bisagrasTotal } = state;
+
+    if (elementos.bisagrasWidget) {
+        elementos.bisagrasWidget.classList.add('activo');
+    }
+
+    if (elementos.bisagrasNominalInfo) {
+        elementos.bisagrasNominalInfo.classList.add('activo');
+        if (fijas) {
+            elementos.bisagrasNominalInfo.textContent = 'Bisagras fijas para este perfil';
+        } else {
+            elementos.bisagrasNominalInfo.textContent =
+                `Nominal: ${bisagrasNominal}  ·  Máx. técnico: ${bisagrasMaxTecnico}`;
+        }
+    }
+
+    if (elementos.bisagrasNum) {
+        elementos.bisagrasNum.textContent = bisagrasTotal;
+        elementos.bisagrasNum.classList.remove('inactivo');
+    }
+
+    const labelEl = document.getElementById('bisagrasLabel');
+    if (labelEl) labelEl.classList.remove('disabled');
+
+    // Botones +/-
+    if (elementos.bisagrasMenos) {
+        elementos.bisagrasMenos.disabled = fijas || bisagrasTotal <= bisagrasNominal;
+    }
+    if (elementos.bisagrasmas) {
+        elementos.bisagrasmas.disabled = fijas || bisagrasTotal >= bisagrasMaxTecnico;
+    }
+
+    actualizarPrecioBisagrasExtra();
+}
+
+function resetearWidgetBisagras() {
+    state.bisagrasNominal    = 0;
+    state.bisagrasExtras     = 0;
+    state.bisagrasMaxTecnico = 0;
+    state.bisagrasTotal      = 0;
+    state.bisagrasCalculadas = 0;
+    state.bisagras           = '';
+
+    if (elementos.bisagrasWidget) elementos.bisagrasWidget.classList.remove('activo');
+    if (elementos.bisagrasNominalInfo) {
+        elementos.bisagrasNominalInfo.classList.remove('activo');
+        elementos.bisagrasNominalInfo.textContent = 'Introduce altura real primero';
+    }
+    if (elementos.bisagrasNum) {
+        elementos.bisagrasNum.textContent = '—';
+        elementos.bisagrasNum.classList.add('inactivo');
+    }
+    if (elementos.bisagrasMenos) elementos.bisagrasMenos.disabled = true;
+    if (elementos.bisagrasmas)   elementos.bisagrasmas.disabled   = true;
+    if (elementos.bisagrasExtraPrecio) elementos.bisagrasExtraPrecio.textContent = '';
+    if (elementos.bisagrasAdvertencia) elementos.bisagrasAdvertencia.textContent = '';
+
+    const labelEl = document.getElementById('bisagrasLabel');
+    if (labelEl) labelEl.classList.add('disabled');
+}
+
+function cambiarBisagrasExtra(delta) {
+    // Perfiles con bisagras fijas: no se permite cambiar
+    const modeloConfig = CONFIG.modelos[state.modelo];
+    if (modeloConfig?.bisagras_fijas) return;
+
+    const nuevo = state.bisagrasTotal + delta;
+    if (nuevo < state.bisagrasNominal || nuevo > state.bisagrasMaxTecnico) return;
+
+    state.bisagrasExtras = nuevo - state.bisagrasNominal;
+    state.bisagrasTotal  = nuevo;
+    state.bisagras       = String(nuevo);
+
+    if (elementos.bisagrasNum) elementos.bisagrasNum.textContent = nuevo;
+    if (elementos.bisagrasMenos) elementos.bisagrasMenos.disabled = nuevo <= state.bisagrasNominal;
+    if (elementos.bisagrasmas)   elementos.bisagrasmas.disabled   = nuevo >= state.bisagrasMaxTecnico;
+
+    actualizarPrecioBisagrasExtra();
+    actualizarResumen();
+    validarFormulario();
+}
+
+function actualizarPrecioBisagrasExtra() {
+    if (!elementos.bisagrasExtraPrecio) return;
+    if (state.bisagrasExtras > 0) {
+        const precio = state.bisagrasExtras * CONFIG.precios.bisagra_extra;
+        elementos.bisagrasExtraPrecio.textContent =
+            `+${state.bisagrasExtras} bisagra${state.bisagrasExtras > 1 ? 's' : ''} extra: +${precio.toFixed(2)} €`;
     } else {
-        numBisagras = 6;
+        elementos.bisagrasExtraPrecio.textContent = '';
     }
-    
-    state.bisagrasCalculadas = numBisagras;
-    
-    // Habilitar y seleccionar en el combo
-    if (elementos.bisagras) {
-        elementos.bisagras.disabled = false;
-        const label = document.getElementById('bisagrasLabel');
-        if (label) label.classList.remove('disabled');
-        
-        if (elementos.bisagras.value === '') {
-            elementos.bisagras.value = numBisagras.toString();
-            state.bisagras = numBisagras.toString();
-        }
-        
-        if (elementos.bisagrasHint) {
-            elementos.bisagrasHint.textContent = `Recomendado: ${numBisagras} bisagras`;
-        }
-    }
-    
-    verificarBisagrasExtra();
+    if (elementos.bisagrasAdvertencia) elementos.bisagrasAdvertencia.textContent = '';
 }
 
 // ==========================================
-// VERIFICAR BISAGRAS EXTRA
+// DISPONIBILIDAD DEL TIRADOR POR MODELO
 // ==========================================
-function verificarBisagrasExtra() {
-    const seleccionadas = parseInt(elementos.bisagras?.value) || 0;
-    const nominal = state.bisagrasCalculadas || 0;
-    const advertencia = elementos.bisagrasAdvertencia;
-    
-    if (!advertencia) return;
-    
-    if (seleccionadas > nominal && nominal > 0) {
-        const extras = seleccionadas - nominal;
-        const precio = extras * CONFIG.precios.bisagra_extra;
-        advertencia.textContent = `ℹ️ ${extras} bisagra${extras > 1 ? 's' : ''} extra: +${precio.toFixed(2)} €`;
-    } else if (seleccionadas < nominal && seleccionadas >= CONFIG.precios.bisagra_minimas) {
-        const menos = nominal - seleccionadas;
-        advertencia.textContent = `⚠️ ${menos} bisagra${menos > 1 ? 's' : ''} menos del recomendado`;
-    } else if (seleccionadas < CONFIG.precios.bisagra_minimas) {
-        advertencia.textContent = `⚠️ Mínimo ${CONFIG.precios.bisagra_minimas} bisagras requeridas`;
+function actualizarDisponibilidadTirador() {
+    const modeloConfig = CONFIG.modelos[state.modelo];
+    const bloqueado = !!modeloConfig?.bisagras_fijas; // KABI, HAVA, HAVASP
+
+    const tiradorLabel = elementos.tirador?.closest('label');
+    if (!tiradorLabel) return;
+
+    if (bloqueado) {
+        // Desactivar visualmente y bloquear interacción
+        tiradorLabel.classList.add('disabled');
+        elementos.tirador.disabled = true;
+
+        // Si estaba marcado, desmarcarlo y limpiar estado
+        if (state.tirador) {
+            elementos.tirador.checked = false;
+            state.tirador = false;
+            state.tiradorTipo = null;
+            elementos.tiradoresCards.forEach(c => c.classList.remove('selected'));
+            if (elementos.tiradoresSelector) {
+                elementos.tiradoresSelector.classList.remove('visible');
+            }
+        }
     } else {
-        advertencia.textContent = '';
+        // Restaurar
+        tiradorLabel.classList.remove('disabled');
+        elementos.tirador.disabled = false;
     }
 }
 
@@ -1728,13 +2120,6 @@ function verificarBisagrasExtra() {
 // ==========================================
 function actualizarCantidad(e) {
     state.cantidad = parseInt(e.target.value) || 1;
-    actualizarResumen();
-    validarFormulario();
-}
-
-function actualizarBisagras(e) {
-    state.bisagras = e.target.value;
-    verificarBisagrasExtra();
     actualizarResumen();
     validarFormulario();
 }
@@ -1853,28 +2238,21 @@ function actualizarResumen() {
 
 function actualizarResumenBisagras() {
     if (!elementos.resumenBisagras) return;
-    
-    const bisagrasSeleccionadas = parseInt(state.bisagras) || 0;
-    const bisagrasNominal = state.bisagrasCalculadas || 0;
-    
-    let texto = '-';
-    let extraTexto = '';
-    
-    if (bisagrasSeleccionadas > 0) {
-        texto = bisagrasSeleccionadas.toString();
-        
-        // Calcular extras y mostrar en el resumen
-        if (bisagrasNominal > 0 && bisagrasSeleccionadas > bisagrasNominal) {
-            const extras = bisagrasSeleccionadas - bisagrasNominal;
-            const extraPrecio = extras * CONFIG.precios.bisagra_extra;
-            extraTexto = `+${extras} extra${extras > 1 ? 's' : ''} (+${extraPrecio.toFixed(2)} €)`;
-        }
+
+    if (state.bisagrasTotal > 0) {
+        elementos.resumenBisagras.textContent = state.bisagrasTotal.toString();
+    } else {
+        elementos.resumenBisagras.textContent = '-';
     }
-    
-    elementos.resumenBisagras.textContent = texto;
-    
+
     if (elementos.resumenBisagrasExtra) {
-        elementos.resumenBisagrasExtra.textContent = extraTexto;
+        if (state.bisagrasExtras > 0) {
+            const precio = state.bisagrasExtras * CONFIG.precios.bisagra_extra;
+            elementos.resumenBisagrasExtra.textContent =
+                `+${state.bisagrasExtras} extra${state.bisagrasExtras > 1 ? 's' : ''} (+${precio.toFixed(2)} €)`;
+        } else {
+            elementos.resumenBisagrasExtra.textContent = '';
+        }
     }
 }
 
@@ -1894,51 +2272,36 @@ function formatearColorVidrio(color) {
 // VALIDACIÓN DEL FORMULARIO
 // ==========================================
 function validarFormulario() {
-    const bisagrasNum = parseInt(state.bisagras) || 0;
-    const bisagrasValidas = bisagrasNum >= CONFIG.precios.bisagra_minimas;
-    
+    const bisagrasValidas = state.bisagrasTotal >= 2;
+
     const alturaValida = state.alturaValido !== false && state.alturaReal > 0;
-    const anchoValida = state.anchoValido !== false && state.anchoReal > 0;
-    
-    // Si tirador está activado, debe tener tipo seleccionado
+    const anchoValida  = state.anchoValido  !== false && state.anchoReal  > 0;
     const tiradorValido = !state.tirador || (state.tirador && state.tiradorTipo);
-    
-    const completo = 
-        state.modelo !== null &&
+
+    const completo =
+        state.modelo  !== null &&
         state.acabado !== null &&
         alturaValida &&
         anchoValida &&
         state.cantidad >= 1 &&
         bisagrasValidas &&
         tiradorValido;
-    
-    if (elementos.btnCalcular) {
-        elementos.btnCalcular.disabled = !completo;
-    }
-    if (elementos.btnFabricar) {
-    elementos.btnFabricar.disabled = !completo;
-    }
+
+    if (elementos.btnCalcular) elementos.btnCalcular.disabled = !completo;
+    if (elementos.btnFabricar) elementos.btnFabricar.disabled = !completo;
 }
 
 // ==========================================
 // BOTÓN CALCULAR
 // ==========================================
 function calcularPresupuesto() {
-    // Calcular precio del tirador
     let precioTirador = 0;
     if (state.tirador && state.tiradorTipo) {
         precioTirador = CONFIG.precios[`Tirador_${state.tiradorTipo}`];
     }
-    
-    // Calcular precio bisagras extra
-    let precioBisagrasExtra = 0;
-    const bisagrasSeleccionadas = parseInt(state.bisagras) || 0;
-    const bisagrasNominal = state.bisagrasCalculadas || 0;
-    if (bisagrasSeleccionadas > bisagrasNominal && bisagrasNominal > 0) {
-        const extras = bisagrasSeleccionadas - bisagrasNominal;
-        precioBisagrasExtra = extras * CONFIG.precios.bisagra_extra;
-    }
-    
+
+    const precioBisagrasExtra = state.bisagrasExtras * CONFIG.precios.bisagra_extra;
+
     const datosCompletos = {
         ...state,
         fecha: new Date().toISOString(),
@@ -1946,24 +2309,23 @@ function calcularPresupuesto() {
         precios: {
             tirador: precioTirador,
             bisagrasExtra: precioBisagrasExtra,
-            total: precioTirador + precioBisagrasExtra // Aquí se añadirán más conceptos
+            total: precioTirador + precioBisagrasExtra
         },
         detalles: {
-            modeloNombre: CONFIG.modelos[state.modelo]?.nombre || '',
-            acabadoNombre: CONFIG.acabados[state.acabado]?.nombre || '',
-            tiradorNombre: state.tiradorTipo ? CONFIG.tiradores[state.tiradorTipo].nombre : 'Sin tirador',
-            bisagrasNominales: bisagrasNominal,
-            bisagrasExtras: bisagrasSeleccionadas > bisagrasNominal ? bisagrasSeleccionadas - bisagrasNominal : 0
+            modeloNombre:      CONFIG.modelos[state.modelo]?.nombre  || '',
+            acabadoNombre:     CONFIG.acabados[state.acabado]?.nombre || '',
+            tiradorNombre:     state.tiradorTipo ? CONFIG.tiradores[state.tiradorTipo].nombre : 'Sin tirador',
+            bisagrasNominales: state.bisagrasNominal,
+            bisagrasExtras:    state.bisagrasExtras
         }
     };
-    
+
     console.log('=== DATOS COMPLETOS PARA CÁLCULO ===');
     console.log('Datos preparados para fase 2:', datosCompletos);
     console.log('Precio tirador:', precioTirador.toFixed(2), '€');
     console.log('Precio bisagras extra:', precioBisagrasExtra.toFixed(2), '€');
-    console.log('Precios configurados:', CONFIG.precios);
     console.log('===================================');
-    
+
     alert(`Configuración guardada correctamente.\n\nResumen:\n- Tirador: ${precioTirador.toFixed(2)} €\n- Bisagras extra: ${precioBisagrasExtra.toFixed(2)} €\n\nPreparando planos de fabricación...`);
 }
 
@@ -2002,8 +2364,12 @@ function resetearDatos() {
     state.anchoReal = 0;
     state.anchoValido = null;
     state.cantidad = 1;
-    state.bisagras = '';
+    state.bisagrasNominal    = 0;
+    state.bisagrasExtras     = 0;
+    state.bisagrasTotal      = 0;
+    state.bisagrasMaxTecnico = 0;
     state.bisagrasCalculadas = 0;
+    state.bisagras           = '';
     state.tirador = false;
     state.vidrioMontado = false;
     state.colorVidrio = '';
@@ -2021,35 +2387,21 @@ function resetearDatos() {
     if (elementos.anchoReal) elementos.anchoReal.value = '';
     if (elementos.anchoMensaje) elementos.anchoMensaje.textContent = '';
     
-    if (elementos.bisagras) {
-        elementos.bisagras.disabled = true;
-        elementos.bisagras.value = '';
-    }
-    
-    const bisagrasLabel = document.getElementById('bisagrasLabel');
-    if (bisagrasLabel) bisagrasLabel.classList.add('disabled');
-    
-    if (elementos.bisagrasHint) {
-        elementos.bisagrasHint.textContent = 'Complete la altura real para activar';
-    }
-    
-    if (elementos.bisagrasAdvertencia) {
-        elementos.bisagrasAdvertencia.textContent = '';
-    }
-    
     if (elementos.cantidad) elementos.cantidad.value = '1';
+
+    // Resetear widget bisagras
+    resetearWidgetBisagras();
+
     if (elementos.tirador) elementos.tirador.checked = false;
-    if (elementos.tiradoresSelector) {
-        elementos.tiradoresSelector.classList.remove('visible');
-    }
+    if (elementos.tiradoresSelector) elementos.tiradoresSelector.classList.remove('visible');
     elementos.tiradoresCards.forEach(card => card.classList.remove('selected'));
     state.tiradorTipo = null;
-    
+
     if (elementos.vidrioMontado) {
         elementos.vidrioMontado.checked = false;
         elementos.vidrioMontado.dispatchEvent(new Event('change'));
     }
-    
+
     actualizarResumen();
     validarFormulario();
 }
