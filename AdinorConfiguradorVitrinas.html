@@ -289,7 +289,12 @@
             border-radius: var(--border-radius);
             font-size: 1rem;
             transition: border-color 0.3s;
+            /* Sin flechas spinner */
+            -moz-appearance: textfield;
+            appearance: textfield;
         }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
         input[type="number"]:focus,
         input[type="text"]:focus,
@@ -983,12 +988,244 @@
                 padding: 8px 12px;
             }
         }
+<<<<<<< HEAD
+
+        /* ==========================================
+           VISTA DE FABRICACIÓN (pantalla completa)
+           ========================================== */
+        #fabVista {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--color-bg);
+        }
+        .fab-topbar {
+            background: var(--color-primary);
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+            box-shadow: var(--shadow);
+        }
+        .fab-topbar h2 {
+            flex: 1;
+            font-size: 1.05rem;
+            font-weight: 400;
+            margin: 0;
+            text-align: center;
+        }
+        .fab-btn-volver {
+            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 10px 18px;
+            transition: opacity 0.3s, transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .fab-btn-volver:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+        .fab-btn-pdf-top {
+            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 10px 18px;
+            transition: opacity 0.3s, transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+        .fab-layout {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        /* --- Columna izquierda --- */
+        .fab-col-izq {
+            width: 285px;
+            flex-shrink: 0;
+            overflow-y: auto;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 16px 16px;
+        }
+        .fab-ficha {
+            background: var(--color-bg);
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e8e8;
+        }
+        .fab-ficha-fila {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 2px 0;
+            font-size: 0.8rem;
+            gap: 8px;
+        }
+        .fab-ficha-fila span { color: var(--color-text-light); flex-shrink: 0; }
+        .fab-ficha-fila strong { color: var(--color-primary); text-align: right; font-size: 0.8rem; }
+        .fab-grupo-label {
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--color-text-light);
+            margin-bottom: 7px;
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .fab-hint {
+            font-weight: normal;
+            text-transform: none;
+            color: var(--color-text-light);
+            letter-spacing: 0;
+            font-size: 0.75rem;
+        }
+        .fab-separador { height: 1px; background: #ececec; margin: 10px 0; }
+
+        /* Grupo: label + input en la misma fila */
+        .fab-input-grupo { margin-bottom: 6px; }
+        .fab-input-grupo label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+        .fab-input-grupo label .fab-hint {
+            flex: 1;
+            font-weight: normal;
+        }
+
+        /* Fila input + "mm" alineados a la derecha dentro del label */
+        .fab-mm-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .fab-mm-row input {
+            width: 68px;
+            padding: 4px 6px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            text-align: right;
+            transition: border-color 0.2s;
+            /* Quitar flechas spinner en todos los navegadores */
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+        .fab-mm-row input::-webkit-outer-spin-button,
+        .fab-mm-row input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .fab-mm-row input:focus { outline: none; border-color: var(--color-secondary); }
+        .fab-mm-row input[readonly] { background: #fffbdf; border-color: #ddd; color: #555; }
+        .fab-mm-row input.fab-err   { border-color: var(--color-accent); background: #fff0f0; }
+        .fab-mm-row span { color: var(--color-text-light); font-size: 0.78rem; }
+        .fab-warn { display: none; font-size: 0.72rem; color: var(--color-accent); margin-top: 1px; }
+        .fab-warn.visible { display: block; }
+        /* Mano */
+        .fab-mano-btns { display: flex; gap: 7px; margin-bottom: 4px; }
+        .fab-mano-btn {
+            flex: 1;
+            padding: 8px 6px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--color-text);
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .fab-mano-btn:hover { border-color: var(--color-secondary); }
+        .fab-mano-btn.selected {
+            border-color: var(--color-secondary);
+            background: #ebf5fb;
+            color: var(--color-secondary);
+            font-weight: 700;
+        }
+        /* Posición tirador */
+        .fab-pos-btns { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 9px; }
+        .fab-pos-btn {
+            padding: 6px 11px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .fab-pos-btn:hover { border-color: var(--color-secondary); }
+        .fab-pos-btn.selected {
+            border-color: var(--color-secondary);
+            background: #ebf5fb;
+            color: var(--color-secondary);
+            font-weight: 700;
+        }
+        /* --- Columna derecha (SVGs) --- */
+        .fab-col-der {
+            flex: 1;
+            display: flex;
+            gap: 14px;
+            overflow: hidden;
+            padding: 14px;
+        }
+        .fab-svg-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+        .fab-svg-titulo {
+            background: var(--color-bg);
+            border-bottom: 1px solid #e0e0e0;
+            padding: 7px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+        .fab-svg-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 6px;
+        }
+        .fab-svg-content svg { max-height: 100%; max-width: 100%; }
+=======
+>>>>>>> ace9c0931bcc8e2f35f99e253021ca78b120cb7f
     </style>
 </head>
 
 <body>
 
-    <header>
+    <header id="mainHeader">
         <div class="container">
             <div class="header-content">
                 <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/LogoAdinorBlanco.png" 
@@ -1000,7 +1237,7 @@
         </div>
     </header>
 
-    <div class="container">
+    <div class="container" id="mainContainer">
         <div class="main-grid">
             
             <!-- Panel Izquierdo: Configuración -->
@@ -1454,6 +1691,26 @@
         </div>
     </div>
 
+<<<<<<< HEAD
+<script src="js/config.js" defer></script>
+<script src="js/configurador.js" defer></script>
+<script src="js/fabricacion.js" defer></script>
+
+<!-- ==========================================
+     VISTA DE FABRICACIÓN (pantalla completa)
+     ========================================== -->
+<div id="fabVista" style="display:none">
+
+    <!-- Barra superior -->
+    <div class="fab-topbar">
+        <button class="fab-btn-volver" id="fabBtnVolver">← Volver a configuración</button>
+        <h2>🔩 Paso a Fabricación</h2>
+        <button class="fab-btn-pdf-top" id="fabBtnPDF" title="Disponible próximamente">📄 Generar PDF</button>
+    </div>
+
+    <!-- Layout: izquierda (inputs) + derecha (SVGs) -->
+    <div class="fab-layout">
+=======
 <script>
 // ==========================================
 // CONFIGURACIÓN EXTERNA
@@ -1645,27 +1902,24 @@ function init() {
     
     console.log('Aplicación inicializada correctamente');
 }
+>>>>>>> ace9c0931bcc8e2f35f99e253021ca78b120cb7f
 
-// ==========================================
-// ACTUALIZAR PRECIOS EN LA INTERFAZ
-// ==========================================
-function actualizarPreciosInterfaz() {
-    // Actualizar precios de tiradores en las cards
-    const precio126 = document.getElementById('precioTirador126x35');
-    const precio37 = document.getElementById('precioTirador37x16');
-    
-    if (precio126) {
-        precio126.textContent = `${CONFIG.precios.Tirador_126x35.toFixed(2)} €`;
-    }
-    if (precio37) {
-        precio37.textContent = `${CONFIG.precios.Tirador_37x16.toFixed(2)} €`;
-    }
-}
+        <!-- Columna izquierda -->
+        <div class="fab-col-izq">
+            <!-- Ficha resumen (solo lectura) -->
+            <div class="fab-ficha" id="fabFicha"></div>
 
-// ==========================================
-// SELECCIÓN DE MODELO
-// ==========================================
+            <!-- Inputs dinámicos (mano, B/C, tirador, Z) -->
+            <div id="fabInputs"></div>
+        </div>
 
+<<<<<<< HEAD
+        <!-- Columna derecha: dos SVGs -->
+        <div class="fab-col-der">
+            <div class="fab-svg-panel">
+                <div class="fab-svg-titulo">Vista Trasera — bisagras</div>
+                <div class="fab-svg-content" id="fabSvgTrasera"></div>
+=======
 function seleccionarModelo(card) {
     console.log('Seleccionando modelo:', card.dataset.modelo);
     elementos.modelos.forEach(c => c.classList.remove('selected'));
@@ -1742,11 +1996,18 @@ function actualizarVistaPrevia() {
         previewContainer.innerHTML = `
             <div class="preview-placeholder">
                 <span>Vista previa del perfil</span>
+>>>>>>> ace9c0931bcc8e2f35f99e253021ca78b120cb7f
             </div>
-        `;
-    }
-}
+            <div class="fab-svg-panel">
+                <div class="fab-svg-titulo">Vista Frontal — tirador</div>
+                <div class="fab-svg-content" id="fabSvgFrontal"></div>
+            </div>
+        </div>
 
+<<<<<<< HEAD
+    </div>
+</div>
+=======
 
 // ==========================================
 // FILTRAR ACABADOS POR MODELO
@@ -2415,6 +2676,7 @@ if (document.readyState === 'loading') {
     init();
 }
 </script>
+>>>>>>> ace9c0931bcc8e2f35f99e253021ca78b120cb7f
 
 </body>
 </html>
