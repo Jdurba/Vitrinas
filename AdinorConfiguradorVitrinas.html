@@ -289,7 +289,12 @@
             border-radius: var(--border-radius);
             font-size: 1rem;
             transition: border-color 0.3s;
+            /* Sin flechas spinner */
+            -moz-appearance: textfield;
+            appearance: textfield;
         }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
         input[type="number"]:focus,
         input[type="text"]:focus,
@@ -531,6 +536,17 @@
             opacity: 0.6;
         }
 
+        .checkbox-item.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .checkbox-item.disabled .checkmark {
+            background: #e0e0e0;
+            border-color: #ccc;
+        }
+
         label.active-label {
             color: var(--color-primary);
             opacity: 1;
@@ -600,14 +616,9 @@
             font-weight: 600;
         }
 
-        #bisagras:disabled {
-            background-color: #f5f5f5;
-            color: #999;
-            cursor: not-allowed;
-        }
-
         #bisagrasLabel.disabled {
             color: #999;
+            opacity: 0.6;
         }
 
         .bisagras-advertencia {
@@ -616,6 +627,89 @@
             color: var(--color-accent);
             margin-top: 5px;
             min-height: 18px;
+        }
+
+        .bisagras-widget {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            background: #f9f9f9;
+            min-height: 48px;
+        }
+
+        .bisagras-widget.activo {
+            background: white;
+            border-color: #ccc;
+        }
+
+        .bisagras-nominal-info {
+            flex: 1;
+            font-size: 0.8rem;
+            color: var(--color-text-light);
+            line-height: 1.2;
+        }
+
+        .bisagras-nominal-info.activo {
+            color: var(--color-text);
+        }
+
+        .bisagras-counter {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .bisagras-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            background: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: var(--color-text-light);
+            line-height: 1;
+        }
+
+        .bisagras-btn:hover:not(:disabled) {
+            border-color: var(--color-secondary);
+            color: var(--color-secondary);
+            background: #ebf5fb;
+        }
+
+        .bisagras-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .bisagras-num {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            min-width: 26px;
+            text-align: center;
+        }
+
+        .bisagras-num.inactivo {
+            color: #ccc;
+            font-size: 1rem;
+        }
+
+        .bisagras-extra-precio {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--color-secondary);
+            font-weight: 600;
+            margin-top: 4px;
+            min-height: 16px;
         }
 
         .opciones-form {
@@ -865,23 +959,282 @@
                 margin-left: 0;
             }
         }
+
+        /* Botón volver al menú */
+        #cab-btn.btn-grad {
+            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 10px 18px;
+            text-decoration: none;
+            transition: opacity 0.3s, transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        #cab-btn.btn-grad:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        @media (max-width: 600px) {
+            #cab-btn.btn-grad {
+                font-size: 0.8rem;
+                padding: 8px 12px;
+            }
+        }
+
+        /* ==========================================
+           VISTA DE FABRICACIÓN (pantalla completa)
+           ========================================== */
+        #fabVista {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--color-bg);
+        }
+        .fab-topbar {
+            background: var(--color-primary);
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+            box-shadow: var(--shadow);
+        }
+        .fab-topbar h2 {
+            flex: 1;
+            font-size: 1.05rem;
+            font-weight: 400;
+            margin: 0;
+            text-align: center;
+        }
+        .fab-btn-volver {
+            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 10px 18px;
+            transition: opacity 0.3s, transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .fab-btn-volver:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+        .fab-btn-pdf-top {
+            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 10px 18px;
+            transition: opacity 0.3s, transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+        .fab-layout {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        /* --- Columna izquierda --- */
+        .fab-col-izq {
+            width: 285px;
+            flex-shrink: 0;
+            overflow-y: auto;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 16px 16px;
+        }
+        .fab-ficha {
+            background: var(--color-bg);
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e8e8;
+        }
+        .fab-ficha-fila {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 2px 0;
+            font-size: 0.8rem;
+            gap: 8px;
+        }
+        .fab-ficha-fila span { color: var(--color-text-light); flex-shrink: 0; }
+        .fab-ficha-fila strong { color: var(--color-primary); text-align: right; font-size: 0.8rem; }
+        .fab-grupo-label {
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--color-text-light);
+            margin-bottom: 7px;
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .fab-hint {
+            font-weight: normal;
+            text-transform: none;
+            color: var(--color-text-light);
+            letter-spacing: 0;
+            font-size: 0.75rem;
+        }
+        .fab-separador { height: 1px; background: #ececec; margin: 10px 0; }
+
+        /* Grupo: label + input en la misma fila */
+        .fab-input-grupo { margin-bottom: 6px; }
+        .fab-input-grupo label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+        .fab-input-grupo label .fab-hint {
+            flex: 1;
+            font-weight: normal;
+        }
+
+        /* Fila input + "mm" alineados a la derecha dentro del label */
+        .fab-mm-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .fab-mm-row input {
+            width: 68px;
+            padding: 4px 6px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            text-align: right;
+            transition: border-color 0.2s;
+            /* Quitar flechas spinner en todos los navegadores */
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+        .fab-mm-row input::-webkit-outer-spin-button,
+        .fab-mm-row input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .fab-mm-row input:focus { outline: none; border-color: var(--color-secondary); }
+        .fab-mm-row input[readonly] { background: #fffbdf; border-color: #ddd; color: #555; }
+        .fab-mm-row input.fab-err   { border-color: var(--color-accent); background: #fff0f0; }
+        .fab-mm-row span { color: var(--color-text-light); font-size: 0.78rem; }
+        .fab-warn { display: none; font-size: 0.72rem; color: var(--color-accent); margin-top: 1px; }
+        .fab-warn.visible { display: block; }
+        /* Mano */
+        .fab-mano-btns { display: flex; gap: 7px; margin-bottom: 4px; }
+        .fab-mano-btn {
+            flex: 1;
+            padding: 8px 6px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--color-text);
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .fab-mano-btn:hover { border-color: var(--color-secondary); }
+        .fab-mano-btn.selected {
+            border-color: var(--color-secondary);
+            background: #ebf5fb;
+            color: var(--color-secondary);
+            font-weight: 700;
+        }
+        /* Posición tirador */
+        .fab-pos-btns { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 9px; }
+        .fab-pos-btn {
+            padding: 6px 11px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .fab-pos-btn:hover { border-color: var(--color-secondary); }
+        .fab-pos-btn.selected {
+            border-color: var(--color-secondary);
+            background: #ebf5fb;
+            color: var(--color-secondary);
+            font-weight: 700;
+        }
+        /* --- Columna derecha (SVGs) --- */
+        .fab-col-der {
+            flex: 1;
+            display: flex;
+            gap: 14px;
+            overflow: hidden;
+            padding: 14px;
+        }
+        .fab-svg-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+        .fab-svg-titulo {
+            background: var(--color-bg);
+            border-bottom: 1px solid #e0e0e0;
+            padding: 7px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+        .fab-svg-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 6px;
+        }
+        .fab-svg-content svg { max-height: 100%; max-width: 100%; }
     </style>
 </head>
 
 <body>
 
-    <header>
+    <header id="mainHeader">
         <div class="container">
             <div class="header-content">
                 <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/LogoAdinorBlanco.png" 
                     alt="Adinor Logo" 
                     class="header-logo">
                 <h1>Configurador de Vitrinas de Aluminio</h1>
+                <button id="cab-btn" class="btn-grad" onclick="window.location.href='https://jdurba.github.io/General/index.html'">← Volver al menú</button>
             </div>
         </div>
     </header>
 
-    <div class="container">
+    <div class="container" id="mainContainer">
         <div class="main-grid">
             
             <!-- Panel Izquierdo: Configuración -->
@@ -988,7 +1341,7 @@
                                 onerror="this.style.display='none'">
                             <div class="modelo-placeholder">BT100</div>
                             <div class="modelo-codigo">BT100</div>
-                            <div class="modelo-desc">Perfil BT100</div>
+                            <div class="modelo-desc">Perfil BT-10</div>
                         </div>
                         
                         <div class="modelo-card" data-modelo="BT110">
@@ -998,10 +1351,44 @@
                                 onerror="this.style.display='none'">
                             <div class="modelo-placeholder">BT110</div>
                             <div class="modelo-codigo">BT110</div>
-                            <div class="modelo-desc">Perfil BT110</div>
+                            <div class="modelo-desc">Perfil BT-60</div>
                         </div>
+
+                        <div class="modelo-card" data-modelo="KABI">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/Kabi_cotas.jpg" 
+                                alt="Modelo KABI" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">KABI</div>
+                            <div class="modelo-codigo">KABI</div>
+                            <div class="modelo-desc">Perfiles KABI</div>
+                        </div>
+
+                        <div class="modelo-card" data-modelo="HAVA">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/Hava_cotas.jpg" 
+                                alt="Modelo HAVA" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">HAVA</div>
+                            <div class="modelo-codigo">HAVA</div>
+                            <div class="modelo-desc">Perfiles HAVA</div>
+                        </div>
+
+                        <div class="modelo-card" data-modelo="HAVASP">
+                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/HavaSP_cotas.jpg" 
+                                alt="Modelo HAVA" 
+                                class="modelo-img"
+                                onerror="this.style.display='none'">
+                            <div class="modelo-placeholder">HAVA S/P</div>
+                            <div class="modelo-codigo">HAVA S/P</div>
+                            <div class="modelo-desc">Perfiles HAVA S/P</div>
+                        </div>
+
+
                     </div>
                 </div>
+
+
 
                 <!-- Sección 2: Selección de Acabado -->
                 <div class="section-card">
@@ -1020,23 +1407,88 @@
                             </div>
                         </div>
                         <div class="acabado-item" data-acabado="B">
-                            <div class="acabado-muestra" style="background: #FFFFFF; border: 2px solid #ddd;"></div>
+                            <div class="acabado-muestra" style="background: linear-gradient(135deg, #FFFFFF 0%, #f0f0f0 40%, #FFFFFF 60%, #e8e8e8 100%); border: 1px solid #ddd;"></div>
                             <div class="acabado-info">
-                                <div class="acabado-nombre">Lacado Blanco (L.B)</div>
+                                <div class="acabado-nombre">Lacado Blanco Brillo (L.B)</div>
                             </div>
                         </div>
+
+                        <div class="acabado-item" data-acabado="BM03">
+                            <div class="acabado-muestra" style="background: radial-gradient(ellipse at 38% 35%, #ffffff 0%, #f2f2f0 45%, #e4e4e2 100%); border: 1px solid #ddd;"></div>
+                            <div class="acabado-info">
+                                <div class="acabado-nombre">Blanco Mate 9003 (L.BM03)</div>
+                            </div>
+                        </div>
+
                         <div class="acabado-item" data-acabado="NM">
                             <div class="acabado-muestra" style="background: #1a1a1a;"></div>
                             <div class="acabado-info">
                                 <div class="acabado-nombre">Lacado Negro Mate (L.NM)</div>
                             </div>
                         </div>
+
+                        <div class="acabado-item" data-acabado="BR">
+                            <div class="acabado-muestra" style="background: #8b6914;"></div>
+                            <div class="acabado-info">
+                                <div class="acabado-nombre">Bronce Cepillado (A.BR)</div>
+                            </div>
+                        </div>
+
+                        <div class="acabado-item" data-acabado="RB">
+                            <div class="acabado-muestra" style="
+                                background:
+                                    repeating-linear-gradient(92deg,
+                                        rgba(255,255,255,0.0) 0px,
+                                        rgba(255,255,255,0.22) 1.5px,
+                                        rgba(0,0,0,0.12) 3px,
+                                        rgba(255,255,255,0.0) 5px,
+                                        rgba(0,0,0,0.15) 7px,
+                                        rgba(255,255,255,0.18) 8.5px,
+                                        rgba(255,255,255,0.0) 10px,
+                                        rgba(0,0,0,0.08) 13px,
+                                        rgba(255,255,255,0.0) 15px,
+                                        rgba(255,255,255,0.20) 17px,
+                                        rgba(0,0,0,0.13) 19px,
+                                        rgba(255,255,255,0.0) 22px
+                                    ),
+                                    linear-gradient(168deg, #e8b030 0%, #c38d05 35%, #9a6e03 70%, #7a5202 100%);
+                            "></div>
+                            <div class="acabado-info">
+                                <div class="acabado-nombre">Chapa Roble (C.RB)</div>
+                            </div>
+                        </div>
+
+                        <div class="acabado-item" data-acabado="NG">
+                            <div class="acabado-muestra" style="
+                                background:
+                                    repeating-linear-gradient(90deg,
+                                        rgba(255,255,255,0.0) 0px,
+                                        rgba(255,255,255,0.18) 1.5px,
+                                        rgba(0,0,0,0.18) 3px,
+                                        rgba(255,255,255,0.0) 5px,
+                                        rgba(0,0,0,0.20) 8px,
+                                        rgba(255,255,255,0.14) 9.5px,
+                                        rgba(255,255,255,0.0) 12px,
+                                        rgba(0,0,0,0.12) 15px,
+                                        rgba(255,255,255,0.16) 17px,
+                                        rgba(255,255,255,0.0) 20px,
+                                        rgba(0,0,0,0.16) 23px,
+                                        rgba(255,255,255,0.0) 26px
+                                    ),
+                                    linear-gradient(168deg, #6b3a10 0%, #3b2301 40%, #261500 75%, #180d00 100%);
+                            "></div>
+                            <div class="acabado-info">
+                                <div class="acabado-nombre">Chapa Nogal (C.NG)</div>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
 
-                <!-- Sección 3: Dimensiones y Opciones -->
+                <!-- Sección 3: Dimensiones y cantidades -->
                 <div class="section-card">
-                    <h2 class="section-title">3. Dimensiones y Opciones</h2>
+                    <h2 class="section-title">3. Dimensiones y cantidades</h2>
 
                     <!-- Tabla de medidas estilo Excel -->
                     <div class="medidas-container">
@@ -1077,21 +1529,20 @@
                         </div>
                     </div>
 
-                    <!-- Resto de opciones -->
+                    <!-- Bisagras y cantidad -->
                     <div class="opciones-form">
-                        
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="bisagras" id="bisagrasLabel">Número de Bisagras</label>
-                                <select id="bisagras" name="bisagras" disabled>
-                                    <option value="">Introduce altura real primero</option>
-                                    <option value="2">2 Bisagras (300-900 mm)</option>
-                                    <option value="3">3 Bisagras (901-1800 mm)</option>
-                                    <option value="4">4 Bisagras (1801-2400 mm)</option>
-                                    <option value="5">5 Bisagras (2401-2800 mm - Solo 7995)</option>
-                                    <option value="6">6 Bisagras (Máximo)</option>
-                                </select>
-                                <span class="input-hint" id="bisagrasHint">Complete la altura real para activar</span>
+                                <label id="bisagrasLabel" class="disabled">Número de Bisagras</label>
+                                <div class="bisagras-widget" id="bisagrasWidget">
+                                    <div class="bisagras-nominal-info" id="bisagrasNominalInfo">Introduce altura real primero</div>
+                                    <div class="bisagras-counter">
+                                        <button class="bisagras-btn" id="bisagrasMenos" disabled>−</button>
+                                        <span class="bisagras-num inactivo" id="bisagrasNum">—</span>
+                                        <button class="bisagras-btn" id="bisagrasmas" disabled>+</button>
+                                    </div>
+                                </div>
+                                <span class="bisagras-extra-precio" id="bisagrasExtraPrecio"></span>
                                 <span class="bisagras-advertencia" id="bisagrasAdvertencia"></span>
                             </div>
 
@@ -1100,9 +1551,15 @@
                                 <input type="number" id="cantidad" name="cantidad" min="1" value="1">
                             </div>
                         </div>
+                    </div>
+                </div>
 
+                <!-- Sección 4: Opciones adicionales -->
+                <div class="section-card">
+                    <h2 class="section-title">4. Opciones adicionales</h2>
+
+                    <div class="opciones-form">
                         <div class="form-group full-width opciones-adicionales">
-                            <label>Opciones adicionales</label>
                             <div class="checkbox-group">
                                 <label class="checkbox-item">
                                     <input type="checkbox" id="tirador" name="tirador">
@@ -1110,7 +1567,7 @@
                                     Tirador mecanizado
                                 </label>
                                 
-                                <!-- Selector de tiradores (justo después del checkbox) -->
+                                <!-- Selector de tiradores -->
                                 <div class="tiradores-selector" id="tiradoresSelector">
                                     <div class="tiradores-titulo">Selecciona el tipo de tirador:</div>
                                     <div class="tiradores-grid">
@@ -1231,838 +1688,48 @@
         </div>
     </div>
 
-<script>
-// ==========================================
-// CONFIGURACIÓN EXTERNA
-// ==========================================
-const CONFIG = {
-    precios: {
-        Tirador_126x35: 7.62,
-        Tirador_37x16: 5.25,
-        bisagra_extra: 5.00,
-        bisagra_minimas: 2
-    },
-    modelos: {
-        '7991': { nombre: '20x45 P8', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
-        '7994': { nombre: '20x45 P4', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
-        '7995': { nombre: '35x45 P8', maxAltura: 2800, maxAncho: 700, Minimo: 150 },
-        '7990': { nombre: '20x45 P20', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
-        '7998': { nombre: '20x45 P45', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
-        '7993': { nombre: '19x21', maxAltura: 2400, maxAncho: 600, Minimo: 150 },
-        '7996': { nombre: '20x18 P8', maxAltura: 2400, maxAncho: 600, Minimo: 150 },
-        '7999': { nombre: '16x60 S/P', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
-        '79916': { nombre: '20x56 C/P', maxAltura: 2400, maxAncho: 700, Minimo: 150 },
-        'BT100': { nombre: 'Perfil BT100', maxAltura: 2600, maxAncho: 700, Minimo: 150 },
-        'BT110': { nombre: 'Perfil BT110', maxAltura: 2700, maxAncho: 700, Minimo: 150 }
-    },
-    acabados: {
-        'PM': { nombre: 'Plata Mate (A.PM)' },
-        'P': { nombre: 'Plata Brillo (A.P)' },
-        'B': { nombre: 'Lacado Blanco (L.B)' },
-        'NM': { nombre: 'Lacado Negro Mate (L.NM)' }
-    },
-    tiradores: {
-        '126x35': { 
-            nombre: 'Tirador 126x35', 
-            medidas: '126 × 35 mm',
-            imagen: 'https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/126x35.jpg'
-        },
-        '37x16': { 
-            nombre: 'Tirador 37x16', 
-            medidas: '37 × 16 mm',
-            imagen: 'https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/37x16.jpg'
-        }
-    }
-};
+<script src="js/config.js" defer></script>
+<script src="js/configurador.js" defer></script>
+<script src="js/fabricacion.js" defer></script>
 
-// ==========================================
-// ESTADO DE LA APLICACIÓN
-// ==========================================
-const state = {
-    modelo: null,
-    acabado: null,
-    alturaModulo: 0,
-    alturaDescuento: 2,
-    alturaReal: 0,
-    alturaValido: null,
-    anchoModulo: 0,
-    anchoDescuento: 2,
-    anchoReal: 0,
-    anchoValido: null,
-    cantidad: 1,
-    bisagras: '',
-    bisagrasCalculadas: 0,
-    tirador: false,
-    tiradorTipo: null, // '126x35' o '37x16'
-    vidrioMontado: false,
-    colorVidrio: ''
-};
+<!-- ==========================================
+     VISTA DE FABRICACIÓN (pantalla completa)
+     ========================================== -->
+<div id="fabVista" style="display:none">
 
-// ==========================================
-// ELEMENTOS DOM
-// ==========================================
-const elementos = {
-    modelos: document.querySelectorAll('.modelo-card'),
-    acabados: document.querySelectorAll('.acabado-item'),
-    alturaModulo: document.getElementById('alturaModulo'),
-    alturaDescuento: document.getElementById('alturaDescuento'),
-    alturaReal: document.getElementById('alturaReal'),
-    alturaMensaje: document.getElementById('alturaMensaje'),
-    anchoModulo: document.getElementById('anchoModulo'),
-    anchoDescuento: document.getElementById('anchoDescuento'),
-    anchoReal: document.getElementById('anchoReal'),
-    anchoMensaje: document.getElementById('anchoMensaje'),
-    cantidad: document.getElementById('cantidad'),
-    bisagras: document.getElementById('bisagras'),
-    bisagrasHint: document.getElementById('bisagrasHint'),
-    bisagrasAdvertencia: document.getElementById('bisagrasAdvertencia'),
-    tirador: document.getElementById('tirador'),
-    tiradoresSelector: document.getElementById('tiradoresSelector'),
-    tiradoresCards: document.querySelectorAll('.tirador-card'),
-    vidrioMontado: document.getElementById('vidrioMontado'),
-    colorVidrio: document.getElementById('colorVidrio'),
-    colorVidrioLabel: document.getElementById('colorVidrioLabel'),
-    resumenModelo: document.getElementById('resumenModelo'),
-    resumenAcabado: document.getElementById('resumenAcabado'),
-    resumenDimensiones: document.getElementById('resumenDimensiones'),
-    resumenCantidad: document.getElementById('resumenCantidad'),
-    resumenBisagras: document.getElementById('resumenBisagras'),
-    resumenBisagrasExtra: document.getElementById('resumenBisagrasExtra'),
-    resumenTirador: document.getElementById('resumenTirador'),
-    resumenVidrio: document.getElementById('resumenVidrio'),
-    precioTotal: document.getElementById('precioTotal'),
-    btnCalcular: document.getElementById('btnCalcular'),
-    btnFabricar: document.getElementById('btnFabricar'), 
-    btnReset: document.getElementById('btnReset')
-};
+    <!-- Barra superior -->
+    <div class="fab-topbar">
+        <button class="fab-btn-volver" id="fabBtnVolver">← Volver a configuración</button>
+        <h2>🔩 Paso a Fabricación</h2>
+        <button class="fab-btn-pdf-top" id="fabBtnPDF" title="Disponible próximamente">📄 Generar PDF</button>
+    </div>
 
-// ==========================================
-// INICIALIZACIÓN
-// ==========================================
-function init() {
-    console.log('Inicializando aplicación...');
-    
-    // Eventos: Modelos
-    elementos.modelos.forEach(card => {
-        card.addEventListener('click', () => {
-            console.log('Modelo clickeado:', card.dataset.modelo);
-            seleccionarModelo(card);
-        });
-    });
-    
-    // Eventos: Acabados
-    elementos.acabados.forEach(item => {
-        item.addEventListener('click', () => {
-            console.log('Acabado clickeado:', item.dataset.acabado);
-            seleccionarAcabado(item);
-        });
-    });
-    
-    // Eventos: Medidas
-    elementos.alturaModulo?.addEventListener('blur', () => calcularMedida('altura', 'modulo'));
-    elementos.alturaDescuento?.addEventListener('blur', () => calcularMedida('altura', 'descuento'));
-    elementos.alturaReal?.addEventListener('blur', () => calcularMedida('altura', 'real'));
-    elementos.anchoModulo?.addEventListener('blur', () => calcularMedida('ancho', 'modulo'));
-    elementos.anchoDescuento?.addEventListener('blur', () => calcularMedida('ancho', 'descuento'));
-    elementos.anchoReal?.addEventListener('blur', () => calcularMedida('ancho', 'real'));
-    
-    // Eventos: Opciones
-    elementos.cantidad?.addEventListener('change', actualizarCantidad);
-    elementos.bisagras?.addEventListener('change', actualizarBisagras);
-    elementos.tirador?.addEventListener('change', actualizarTirador);
-    
-    // Eventos: Selector de tiradores
-    elementos.tiradoresCards.forEach(card => {
-        card.addEventListener('click', () => seleccionarTirador(card));
-    });
-    
-    elementos.vidrioMontado?.addEventListener('change', actualizarVidrio);
-    elementos.colorVidrio?.addEventListener('change', actualizarColorVidrio);
-    
-    // Eventos: Botones
-    elementos.btnCalcular?.addEventListener('click', calcularPresupuesto);
-    elementos.btnFabricar?.addEventListener('click', pasarAFabricacion); 
-    elementos.btnReset?.addEventListener('click', resetearDatos);
-    
-    // Actualizar precios en la interfaz desde CONFIG
-    actualizarPreciosInterfaz();
-    
-    // Inicializar estado
-    actualizarResumen();
-    validarFormulario();
-    
-    console.log('Aplicación inicializada correctamente');
-}
+    <!-- Layout: izquierda (inputs) + derecha (SVGs) -->
+    <div class="fab-layout">
 
-// ==========================================
-// ACTUALIZAR PRECIOS EN LA INTERFAZ
-// ==========================================
-function actualizarPreciosInterfaz() {
-    // Actualizar precios de tiradores en las cards
-    const precio126 = document.getElementById('precioTirador126x35');
-    const precio37 = document.getElementById('precioTirador37x16');
-    
-    if (precio126) {
-        precio126.textContent = `${CONFIG.precios.Tirador_126x35.toFixed(2)} €`;
-    }
-    if (precio37) {
-        precio37.textContent = `${CONFIG.precios.Tirador_37x16.toFixed(2)} €`;
-    }
-}
+        <!-- Columna izquierda -->
+        <div class="fab-col-izq">
+            <!-- Ficha resumen (solo lectura) -->
+            <div class="fab-ficha" id="fabFicha"></div>
 
-// ==========================================
-// SELECCIÓN DE MODELO
-// ==========================================
+            <!-- Inputs dinámicos (mano, B/C, tirador, Z) -->
+            <div id="fabInputs"></div>
+        </div>
 
-function seleccionarModelo(card) {
-    console.log('Seleccionando modelo:', card.dataset.modelo);
-    elementos.modelos.forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    state.modelo = card.dataset.modelo;
-    console.log('Estado del modelo actualizado:', state.modelo);
-    
-    // Actualizar vista previa del perfil
-    actualizarVistaPrevia();
-    
-    // Mostrar rangos válidos en los mensajes si no hay medidas
-    if (!state.alturaReal || state.alturaReal === 0) {
-        const validacionAltura = validarMedida('altura', 0);
-        mostrarValidacion('altura', validacionAltura);
-    } else {
-        // Re-validar altura existente
-        const validacionAltura = validarMedida('altura', state.alturaReal);
-        mostrarValidacion('altura', validacionAltura);
-    }
-    
-    if (!state.anchoReal || state.anchoReal === 0) {
-        const validacionAncho = validarMedida('ancho', 0);
-        mostrarValidacion('ancho', validacionAncho);
-    } else {
-        // Re-validar ancho existente
-        const validacionAncho = validarMedida('ancho', state.anchoReal);
-        mostrarValidacion('ancho', validacionAncho);
-    }
-    
-    actualizarResumen();
-    validarFormulario();
-}
-
-
-// ==========================================
-// ACTUALIZAR VISTA PREVIA DEL PERFIL
-// ==========================================
-function actualizarVistaPrevia() {
-    const previewContainer = document.getElementById('previewVitrina');
-    if (!previewContainer) return;
-    
-    if (state.modelo) {
-        const imagenUrl = `https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/${state.modelo}_cotas.jpg`;
-        
-        previewContainer.innerHTML = `
-            <img src="${imagenUrl}" 
-                 alt="Perfil ${state.modelo}" 
-                 class="vitrina-preview-img"
-                 onerror="this.parentElement.innerHTML='<div class=\'preview-placeholder\'><span>Imagen no disponible</span></div>'">
-        `;
-    } else {
-        previewContainer.innerHTML = `
-            <div class="preview-placeholder">
-                <span>Vista previa del perfil</span>
+        <!-- Columna derecha: dos SVGs -->
+        <div class="fab-col-der">
+            <div class="fab-svg-panel">
+                <div class="fab-svg-titulo">Vista Trasera — bisagras</div>
+                <div class="fab-svg-content" id="fabSvgTrasera"></div>
             </div>
-        `;
-    }
-}
+            <div class="fab-svg-panel">
+                <div class="fab-svg-titulo">Vista Frontal — tirador</div>
+                <div class="fab-svg-content" id="fabSvgFrontal"></div>
+            </div>
+        </div>
 
-
-
-// ==========================================
-// SELECCIÓN DE ACABADO
-// ==========================================
-function seleccionarAcabado(item) {
-    console.log('Seleccionando acabado:', item.dataset.acabado);
-    elementos.acabados.forEach(i => i.classList.remove('selected'));
-    item.classList.add('selected');
-    state.acabado = item.dataset.acabado;
-    console.log('Estado del acabado actualizado:', state.acabado);
-    actualizarResumen();
-    validarFormulario();
-}
-
-// ==========================================
-// CÁLCULO DE MEDIDAS
-// ==========================================
-function calcularMedida(tipo, campo) {
-    const modulo = parseFloat(elementos[`${tipo}Modulo`]?.value) || 0;
-    const descuento = parseFloat(elementos[`${tipo}Descuento`]?.value) || 0;
-    const real = parseFloat(elementos[`${tipo}Real`]?.value) || 0;
-    
-    let nuevoReal = real;
-    
-    switch(campo) {
-        case 'modulo':
-        case 'descuento':
-            nuevoReal = modulo - descuento;
-            if (elementos[`${tipo}Real`]) {
-                // Mantener el valor incluso si es negativo para poder validarlo
-                elementos[`${tipo}Real`].value = nuevoReal !== 0 ? nuevoReal : '';
-            }
-            break;
-        case 'real':
-            const nuevoModulo = real + descuento;
-            if (elementos[`${tipo}Modulo`]) {
-                elementos[`${tipo}Modulo`].value = nuevoModulo !== 0 ? nuevoModulo : '';
-            }
-            break;
-    }
-    
-    // Guardar en estado (permitir negativos para validarlos)
-    state[`${tipo}Modulo`] = parseFloat(elementos[`${tipo}Modulo`]?.value) || 0;
-    state[`${tipo}Descuento`] = parseFloat(elementos[`${tipo}Descuento`]?.value) || 0;
-    
-    // Obtener el valor real del input (puede ser negativo)
-    const valorRealInput = elementos[`${tipo}Real`]?.value;
-    state[`${tipo}Real`] = valorRealInput !== '' ? parseFloat(valorRealInput) : 0;
-    
-    // Validar y mostrar mensaje
-    const validacion = validarMedida(tipo, state[`${tipo}Real`]);
-    mostrarValidacion(tipo, validacion);
-    
-    // Si el valor está bloqueado (menor que mínimo o negativo), no permitir continuar
-    if (validacion.bloqueado) {
-        // No calcular bisagras ni permitir avanzar
-        if (tipo === 'altura') {
-            if (elementos.bisagras) {
-                elementos.bisagras.disabled = true;
-                elementos.bisagras.value = '';
-            }
-            state.bisagrasCalculadas = 0;
-        }
-        // Marcar como inválido en el estado
-        state[`${tipo}Valido`] = false;
-    } else {
-        // Si es altura y es válida, calcular bisagras
-        if (tipo === 'altura' && validacion.valido && state[`${tipo}Real`] > 0) {
-            calcularBisagrasAutomaticas();
-        } else if (tipo === 'altura') {
-            if (elementos.bisagras) {
-                elementos.bisagras.disabled = true;
-                elementos.bisagras.value = '';
-            }
-            state.bisagrasCalculadas = 0;
-        }
-    }
-    
-    actualizarResumen();
-    validarFormulario();
-}
-
-// ==========================================
-// VALIDACIÓN DE MEDIDAS
-// ==========================================
-function validarMedida(tipo, valor) {
-    const modelo = CONFIG.modelos[state.modelo];
-    
-    // Si no hay modelo seleccionado, mostrar mensaje informativo
-    if (!modelo) {
-        return { 
-            valido: false, 
-            mensaje: '← Selecciona un modelo primero', 
-            clase: 'info',
-            bloqueado: false
-        };
-    }
-    
-    const max = tipo === 'altura' ? modelo.maxAltura : modelo.maxAncho;
-    
-    // ERROR CRÍTICO: Valor negativo - BLOQUEAR (antes de comprobar si es 0)
-    if (valor < 0) {
-        return {
-            valido: false,
-            mensaje: `⛔ No se permiten valores negativos`,
-            clase: 'error',
-            bloqueado: true
-        };
-    }
-    
-    // Si no hay valor o es cero, mostrar rango válido
-    if (!valor || valor === 0) {
-        return { 
-            valido: false, 
-            mensaje: `Rango válido: ${modelo.Minimo}-${max} mm`, 
-            clase: 'info',
-            bloqueado: false
-        };
-    }
-    
-    // ERROR CRÍTICO: Menor que mínimo absoluto - BLOQUEAR
-    if (valor < modelo.Minimo) {
-        return {
-            valido: false,
-            mensaje: `⛔ Mínimo absoluto: ${modelo.Minimo} mm`,
-            clase: 'error',
-            bloqueado: true
-        };
-    }
-    
-    // ADVERTENCIA: Fuera de rango recomendado pero válido
-    if (valor > max) {
-        return {
-            valido: true, // Permitido pero con advertencia
-            mensaje: `⚠️ Supera máximo recomendado (${max} mm)`,
-            clase: 'advertencia',
-            bloqueado: false
-        };
-    }
-    
-    // VÁLIDO: Dentro del rango perfecto
-    return {
-        valido: true,
-        mensaje: `✓ Válido (${modelo.Minimo}-${max} mm)`,
-        clase: 'valido',
-        bloqueado: false
-    };
-}
-
-// ==========================================
-// MOSTRAR VALIDACIÓN
-// ==========================================
-function mostrarValidacion(tipo, resultado) {
-    const inputEl = elementos[`${tipo}Real`];
-    const mensajeEl = elementos[`${tipo}Mensaje`];
-    
-    if (!inputEl || !mensajeEl) return;
-    
-    // Quitar clases anteriores
-    inputEl.classList.remove('valido', 'advertencia', 'error', 'bloqueado', 'info');
-    
-    // Si está bloqueado, resetear el valor
-    if (resultado.bloqueado && state[`${tipo}Real`] > 0) {
-        // Mantener el valor pero marcarlo como error
-        inputEl.classList.add('bloqueado');
-    } else if (resultado.clase) {
-        // Aplicar clase normal
-        inputEl.classList.add(resultado.clase);
-    }
-    
-    // Mostrar mensaje
-    mensajeEl.textContent = resultado.mensaje;
-    mensajeEl.className = `medidas-mensaje ${resultado.clase}`;
-    
-    // Guardar estado de validación
-    state[`${tipo}Valido`] = resultado.valido && !resultado.bloqueado;
-}
-
-// ==========================================
-// CÁLCULO AUTOMÁTICO DE BISAGRAS
-// ==========================================
-function calcularBisagrasAutomaticas() {
-    const alturaReal = state.alturaReal;
-    const modelo = state.modelo;
-    
-    if (!alturaReal || alturaReal < 300 || !modelo) {
-        state.bisagrasCalculadas = 0;
-        return;
-    }
-    
-    let numBisagras = 2;
-    
-    if (alturaReal <= 900) {
-        numBisagras = 2;
-    } else if (alturaReal <= 1800) {
-        numBisagras = 3;
-    } else if (alturaReal <= 2400) {
-        numBisagras = 4;
-    } else if (alturaReal <= 2800 && modelo === '7995') {
-        numBisagras = 5;
-    } else {
-        numBisagras = 6;
-    }
-    
-    state.bisagrasCalculadas = numBisagras;
-    
-    // Habilitar y seleccionar en el combo
-    if (elementos.bisagras) {
-        elementos.bisagras.disabled = false;
-        const label = document.getElementById('bisagrasLabel');
-        if (label) label.classList.remove('disabled');
-        
-        if (elementos.bisagras.value === '') {
-            elementos.bisagras.value = numBisagras.toString();
-            state.bisagras = numBisagras.toString();
-        }
-        
-        if (elementos.bisagrasHint) {
-            elementos.bisagrasHint.textContent = `Recomendado: ${numBisagras} bisagras`;
-        }
-    }
-    
-    verificarBisagrasExtra();
-}
-
-// ==========================================
-// VERIFICAR BISAGRAS EXTRA
-// ==========================================
-function verificarBisagrasExtra() {
-    const seleccionadas = parseInt(elementos.bisagras?.value) || 0;
-    const nominal = state.bisagrasCalculadas || 0;
-    const advertencia = elementos.bisagrasAdvertencia;
-    
-    if (!advertencia) return;
-    
-    if (seleccionadas > nominal && nominal > 0) {
-        const extras = seleccionadas - nominal;
-        const precio = extras * CONFIG.precios.bisagra_extra;
-        advertencia.textContent = `ℹ️ ${extras} bisagra${extras > 1 ? 's' : ''} extra: +${precio.toFixed(2)} €`;
-    } else if (seleccionadas < nominal && seleccionadas >= CONFIG.precios.bisagra_minimas) {
-        const menos = nominal - seleccionadas;
-        advertencia.textContent = `⚠️ ${menos} bisagra${menos > 1 ? 's' : ''} menos del recomendado`;
-    } else if (seleccionadas < CONFIG.precios.bisagra_minimas) {
-        advertencia.textContent = `⚠️ Mínimo ${CONFIG.precios.bisagra_minimas} bisagras requeridas`;
-    } else {
-        advertencia.textContent = '';
-    }
-}
-
-// ==========================================
-// ACTUALIZACIÓN DE OPCIONES
-// ==========================================
-function actualizarCantidad(e) {
-    state.cantidad = parseInt(e.target.value) || 1;
-    actualizarResumen();
-    validarFormulario();
-}
-
-function actualizarBisagras(e) {
-    state.bisagras = e.target.value;
-    verificarBisagrasExtra();
-    actualizarResumen();
-    validarFormulario();
-}
-
-function actualizarTirador(e) {
-    state.tirador = e.target.checked;
-    
-    // Mostrar u ocultar el selector de tiradores
-    if (elementos.tiradoresSelector) {
-        if (state.tirador) {
-            elementos.tiradoresSelector.classList.add('visible');
-        } else {
-            elementos.tiradoresSelector.classList.remove('visible');
-            // Resetear selección
-            elementos.tiradoresCards.forEach(card => card.classList.remove('selected'));
-            state.tiradorTipo = null;
-        }
-    }
-    
-    actualizarResumen();
-    validarFormulario();
-}
-
-function seleccionarTirador(card) {
-    console.log('Seleccionando tirador:', card.dataset.tirador);
-    elementos.tiradoresCards.forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    state.tiradorTipo = card.dataset.tirador;
-    console.log('Tipo de tirador actualizado:', state.tiradorTipo);
-    actualizarResumen();
-}
-
-function actualizarVidrio(e) {
-    state.vidrioMontado = e.target.checked;
-    
-    if (elementos.colorVidrio) {
-        elementos.colorVidrio.disabled = !state.vidrioMontado;
-    }
-    if (elementos.colorVidrioLabel) {
-        elementos.colorVidrioLabel.classList.toggle('disabled', !state.vidrioMontado);
-        elementos.colorVidrioLabel.classList.toggle('active-label', state.vidrioMontado);
-    }
-    
-    if (!state.vidrioMontado) {
-        state.colorVidrio = '';
-        if (elementos.colorVidrio) elementos.colorVidrio.value = '';
-    }
-    
-    actualizarResumen();
-}
-
-function actualizarColorVidrio(e) {
-    state.colorVidrio = e.target.value;
-    actualizarResumen();
-}
-
-// ==========================================
-// ACTUALIZAR RESUMEN LATERAL
-// ==========================================
-function actualizarResumen() {
-    // Modelo
-    if (elementos.resumenModelo) {
-        elementos.resumenModelo.textContent = state.modelo 
-            ? `${state.modelo} - ${CONFIG.modelos[state.modelo]?.nombre || ''}`
-            : '-';
-    }
-    
-    // Acabado
-    if (elementos.resumenAcabado) {
-        elementos.resumenAcabado.textContent = state.acabado 
-            ? CONFIG.acabados[state.acabado]?.nombre || '-'
-            : '-';
-    }
-    
-    // Dimensiones
-    if (elementos.resumenDimensiones) {
-        const altReal = state.alturaReal || '-';
-        const ancReal = state.anchoReal || '-';
-        elementos.resumenDimensiones.textContent = (altReal !== '-' && ancReal !== '-')
-            ? `${altReal} × ${ancReal} mm`
-            : '-';
-    }
-    
-    // Cantidad
-    if (elementos.resumenCantidad) {
-        elementos.resumenCantidad.textContent = state.cantidad > 0 
-            ? `${state.cantidad} unidad${state.cantidad > 1 ? 'es' : ''}`
-            : '-';
-    }
-    
-    // Bisagras
-    actualizarResumenBisagras();
-    
-    // Tirador
-    if (elementos.resumenTirador) {
-        let textoTirador = 'No';
-        if (state.tirador && state.tiradorTipo) {
-            const tirador = CONFIG.tiradores[state.tiradorTipo];
-            const precio = CONFIG.precios[`Tirador_${state.tiradorTipo}`];
-            textoTirador = `Sí (${tirador.medidas} - ${precio.toFixed(2)} €)`;
-        } else if (state.tirador) {
-            textoTirador = 'Sí (sin seleccionar)';
-        }
-        elementos.resumenTirador.textContent = textoTirador;
-    }
-    
-    // Vidrio
-    if (elementos.resumenVidrio) {
-        let texto = state.vidrioMontado ? 'Sí' : 'No';
-        if (state.vidrioMontado && state.colorVidrio) {
-            texto += ` (${formatearColorVidrio(state.colorVidrio)})`;
-        }
-        elementos.resumenVidrio.textContent = texto;
-    }
-}
-
-function actualizarResumenBisagras() {
-    if (!elementos.resumenBisagras) return;
-    
-    const bisagrasSeleccionadas = parseInt(state.bisagras) || 0;
-    const bisagrasNominal = state.bisagrasCalculadas || 0;
-    
-    let texto = '-';
-    let extraTexto = '';
-    
-    if (bisagrasSeleccionadas > 0) {
-        texto = bisagrasSeleccionadas.toString();
-        
-        // Calcular extras y mostrar en el resumen
-        if (bisagrasNominal > 0 && bisagrasSeleccionadas > bisagrasNominal) {
-            const extras = bisagrasSeleccionadas - bisagrasNominal;
-            const extraPrecio = extras * CONFIG.precios.bisagra_extra;
-            extraTexto = `+${extras} extra${extras > 1 ? 's' : ''} (+${extraPrecio.toFixed(2)} €)`;
-        }
-    }
-    
-    elementos.resumenBisagras.textContent = texto;
-    
-    if (elementos.resumenBisagrasExtra) {
-        elementos.resumenBisagrasExtra.textContent = extraTexto;
-    }
-}
-
-function formatearColorVidrio(color) {
-    const colores = {
-        'transparente': 'Transparente',
-        'mate': 'Mate',
-        'bronce': 'Bronce',
-        'gris': 'Gris',
-        'grisoscuro': 'Gris oscuro',
-        'especial': 'Especial'
-    };
-    return colores[color] || color;
-}
-
-// ==========================================
-// VALIDACIÓN DEL FORMULARIO
-// ==========================================
-function validarFormulario() {
-    const bisagrasNum = parseInt(state.bisagras) || 0;
-    const bisagrasValidas = bisagrasNum >= CONFIG.precios.bisagra_minimas;
-    
-    const alturaValida = state.alturaValido !== false && state.alturaReal > 0;
-    const anchoValida = state.anchoValido !== false && state.anchoReal > 0;
-    
-    // Si tirador está activado, debe tener tipo seleccionado
-    const tiradorValido = !state.tirador || (state.tirador && state.tiradorTipo);
-    
-    const completo = 
-        state.modelo !== null &&
-        state.acabado !== null &&
-        alturaValida &&
-        anchoValida &&
-        state.cantidad >= 1 &&
-        bisagrasValidas &&
-        tiradorValido;
-    
-    if (elementos.btnCalcular) {
-        elementos.btnCalcular.disabled = !completo;
-    }
-    if (elementos.btnFabricar) {
-    elementos.btnFabricar.disabled = !completo;
-    }
-}
-
-// ==========================================
-// BOTÓN CALCULAR
-// ==========================================
-function calcularPresupuesto() {
-    // Calcular precio del tirador
-    let precioTirador = 0;
-    if (state.tirador && state.tiradorTipo) {
-        precioTirador = CONFIG.precios[`Tirador_${state.tiradorTipo}`];
-    }
-    
-    // Calcular precio bisagras extra
-    let precioBisagrasExtra = 0;
-    const bisagrasSeleccionadas = parseInt(state.bisagras) || 0;
-    const bisagrasNominal = state.bisagrasCalculadas || 0;
-    if (bisagrasSeleccionadas > bisagrasNominal && bisagrasNominal > 0) {
-        const extras = bisagrasSeleccionadas - bisagrasNominal;
-        precioBisagrasExtra = extras * CONFIG.precios.bisagra_extra;
-    }
-    
-    const datosCompletos = {
-        ...state,
-        fecha: new Date().toISOString(),
-        configuracionValida: true,
-        precios: {
-            tirador: precioTirador,
-            bisagrasExtra: precioBisagrasExtra,
-            total: precioTirador + precioBisagrasExtra // Aquí se añadirán más conceptos
-        },
-        detalles: {
-            modeloNombre: CONFIG.modelos[state.modelo]?.nombre || '',
-            acabadoNombre: CONFIG.acabados[state.acabado]?.nombre || '',
-            tiradorNombre: state.tiradorTipo ? CONFIG.tiradores[state.tiradorTipo].nombre : 'Sin tirador',
-            bisagrasNominales: bisagrasNominal,
-            bisagrasExtras: bisagrasSeleccionadas > bisagrasNominal ? bisagrasSeleccionadas - bisagrasNominal : 0
-        }
-    };
-    
-    console.log('=== DATOS COMPLETOS PARA CÁLCULO ===');
-    console.log('Datos preparados para fase 2:', datosCompletos);
-    console.log('Precio tirador:', precioTirador.toFixed(2), '€');
-    console.log('Precio bisagras extra:', precioBisagrasExtra.toFixed(2), '€');
-    console.log('Precios configurados:', CONFIG.precios);
-    console.log('===================================');
-    
-    alert(`Configuración guardada correctamente.\n\nResumen:\n- Tirador: ${precioTirador.toFixed(2)} €\n- Bisagras extra: ${precioBisagrasExtra.toFixed(2)} €\n\nPreparando planos de fabricación...`);
-}
-
-// ==========================================
-// BOTÓN FABRICACIÓN
-// ==========================================
-function pasarAFabricacion() {
-    // Aquí irá la lógica para ir a hojas de fabricación
-    console.log('Pasando a fabricación...');
-    alert('Preparando hojas de fabricación...');
-}
-
-
-
-
-
-
-// ==========================================
-// BOTÓN RESET
-// ==========================================
-function resetearDatos() {
-    if (!confirm('¿Estás seguro de que quieres borrar todos los datos?')) {
-        return;
-    }
-    
-    // Resetear estado
-    state.modelo = null;
-    actualizarVistaPrevia();  // Añade esta línea
-    state.acabado = null;
-    state.alturaModulo = 0;
-    state.alturaDescuento = 2;
-    state.alturaReal = 0;
-    state.alturaValido = null;
-    state.anchoModulo = 0;
-    state.anchoDescuento = 2;
-    state.anchoReal = 0;
-    state.anchoValido = null;
-    state.cantidad = 1;
-    state.bisagras = '';
-    state.bisagrasCalculadas = 0;
-    state.tirador = false;
-    state.vidrioMontado = false;
-    state.colorVidrio = '';
-    
-    // Resetear UI
-    elementos.modelos.forEach(c => c.classList.remove('selected'));
-    elementos.acabados.forEach(i => i.classList.remove('selected'));
-    
-    if (elementos.alturaModulo) elementos.alturaModulo.value = '';
-    if (elementos.alturaDescuento) elementos.alturaDescuento.value = '2';
-    if (elementos.alturaReal) elementos.alturaReal.value = '';
-    if (elementos.alturaMensaje) elementos.alturaMensaje.textContent = '';
-    if (elementos.anchoModulo) elementos.anchoModulo.value = '';
-    if (elementos.anchoDescuento) elementos.anchoDescuento.value = '2';
-    if (elementos.anchoReal) elementos.anchoReal.value = '';
-    if (elementos.anchoMensaje) elementos.anchoMensaje.textContent = '';
-    
-    if (elementos.bisagras) {
-        elementos.bisagras.disabled = true;
-        elementos.bisagras.value = '';
-    }
-    
-    const bisagrasLabel = document.getElementById('bisagrasLabel');
-    if (bisagrasLabel) bisagrasLabel.classList.add('disabled');
-    
-    if (elementos.bisagrasHint) {
-        elementos.bisagrasHint.textContent = 'Complete la altura real para activar';
-    }
-    
-    if (elementos.bisagrasAdvertencia) {
-        elementos.bisagrasAdvertencia.textContent = '';
-    }
-    
-    if (elementos.cantidad) elementos.cantidad.value = '1';
-    if (elementos.tirador) elementos.tirador.checked = false;
-    if (elementos.tiradoresSelector) {
-        elementos.tiradoresSelector.classList.remove('visible');
-    }
-    elementos.tiradoresCards.forEach(card => card.classList.remove('selected'));
-    state.tiradorTipo = null;
-    
-    if (elementos.vidrioMontado) {
-        elementos.vidrioMontado.checked = false;
-        elementos.vidrioMontado.dispatchEvent(new Event('change'));
-    }
-    
-    actualizarResumen();
-    validarFormulario();
-}
-
-// ==========================================
-// INICIAR APLICACIÓN
-// ==========================================
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
-    init();
-}
-</script>
+    </div>
+</div>
 
 </body>
 </html>
