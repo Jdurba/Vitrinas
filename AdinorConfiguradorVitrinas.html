@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configurador de Vitrinas de Aluminio</title>
+
+    <!-- Configuración para todos HTML,  Mensajes y control de Impresion de página  -->
+    <script>
+    window.ADINOR_CONFIG = {
+        tituloModal: 'Adinor · Vitrinas'
+    };
+    </script>
+
+    <!-- Carga del JS compartido -->
+    <script>
+    document.write(
+        location.hostname.endsWith('github.io')
+        ? '<script src="https://jdurba.github.io/General/ConfigTodos.js?v=1"><\/script>'
+        : '<script src="../ConfigTodos.js?v=1"><\/script>'
+    );
+    </script>
+    <!--   Fin de la declaración para todos   Mensajes y control de Impresion -->
+
     <style>
         :root {
             --color-primary: #2c3e50;
@@ -1046,8 +1064,6 @@
             transition: opacity 0.3s, transform 0.2s, box-shadow 0.2s;
             white-space: nowrap;
             flex-shrink: 0;
-            opacity: 0.45;
-            cursor: not-allowed;
         }
         .fab-layout {
             flex: 1;
@@ -1688,9 +1704,13 @@
         </div>
     </div>
 
+
+<script src="js/jspdf_umd_min.js"></script>
 <script src="js/config.js" defer></script>
 <script src="js/configurador.js" defer></script>
 <script src="js/fabricacion.js" defer></script>
+<script src="js/pdfVitrinas.js" defer></script>
+
 
 <!-- ==========================================
      VISTA DE FABRICACIÓN (pantalla completa)
