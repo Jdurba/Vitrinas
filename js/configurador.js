@@ -24,8 +24,13 @@ const state = {
     tirador: false,
     tiradorTipo: null,
     vidrioMontado: false,
-    colorVidrio: ''
+    colorVidrio: '',
+    vidrioAlto: 0,
+    vidrioAncho: 0
 };
+
+// Límite duro de fabricación del vidrio (mm)
+const VIDRIO_MAX_ALTO = 2800;
 
 // ==========================================
 // ELEMENTOS DOM
@@ -58,12 +63,12 @@ const elementos = {
     resumenModelo: document.getElementById('resumenModelo'),
     resumenAcabado: document.getElementById('resumenAcabado'),
     resumenDimensiones: document.getElementById('resumenDimensiones'),
+    resumenVidrioMedidas: document.getElementById('resumenVidrioMedidas'),
     resumenCantidad: document.getElementById('resumenCantidad'),
     resumenBisagras: document.getElementById('resumenBisagras'),
     resumenBisagrasExtra: document.getElementById('resumenBisagrasExtra'),
     resumenTirador: document.getElementById('resumenTirador'),
     resumenVidrio: document.getElementById('resumenVidrio'),
-    precioTotal: document.getElementById('precioTotal'),
     btnCalcular: document.getElementById('btnCalcular'),
     btnFabricar: document.getElementById('btnFabricar'),
     btnReset: document.getElementById('btnReset')
@@ -74,6 +79,13 @@ const elementos = {
 // ==========================================
 function init() {
     console.log('Inicializando aplicación...');
+
+    // Nombres de acabado desde CONFIG (única fuente de verdad; el texto del HTML es solo fallback)
+    elementos.acabados.forEach(item => {
+        const cfg = CONFIG.acabados[item.dataset.acabado];
+        const nombreEl = item.querySelector('.acabado-nombre');
+        if (cfg && nombreEl) nombreEl.textContent = cfg.nombre;
+    });
 
     elementos.modelos.forEach(card => {
         card.addEventListener('click', () => seleccionarModelo(card));
@@ -149,6 +161,8 @@ function seleccionarModelo(card) {
 
     if (state.alturaReal > 0) {
         const v = validarMedida('altura', state.alturaReal);
+        avisarSiBloqueoVidrio(v);
+        actualizarDisponibilidadVidrio(!!v.motivoVidrio);
         if (v.valido && !v.bloqueado) {
             calcularBisagrasAutomaticas();
         } else {
@@ -158,6 +172,7 @@ function seleccionarModelo(card) {
         resetearWidgetBisagras();
     }
 
+    calcularVidrio();
     actualizarResumen();
     validarFormulario();
 }
@@ -213,7 +228,7 @@ function filtrarAcabadosPorModelo() {
 // ==========================================
 function actualizarDisponibilidadTirador() {
     const modeloConfig = CONFIG.modelos[state.modelo];
-    const bloqueado = !!modeloConfig?.bisagras_fijas;
+    const bloqueado = !!modeloConfig?.sinTirador;
 
     const tiradorLabel = elementos.tirador?.closest('label');
     if (!tiradorLabel) return;
@@ -229,6 +244,9 @@ function actualizarDisponibilidadTirador() {
             elementos.tiradoresCards.forEach(c => c.classList.remove('selected'));
             if (elementos.tiradoresSelector) {
                 elementos.tiradoresSelector.classList.remove('visible');
+            }
+            if (typeof aviso === 'function') {
+                aviso('Este perfil no admite tirador mecanizado.\nSe ha eliminado el tirador de la configuración.');
             }
         }
     } else {
@@ -282,6 +300,9 @@ function calcularMedida(tipo, campo) {
 
     const validacion = validarMedida(tipo, state[`${tipo}Real`]);
     mostrarValidacion(tipo, validacion);
+    avisarSiBloqueoVidrio(validacion);
+    if (tipo === 'altura') actualizarDisponibilidadVidrio(!!validacion.motivoVidrio);
+    calcularVidrio();
 
     if (validacion.bloqueado) {
         if (tipo === 'altura') resetearWidgetBisagras();
@@ -296,6 +317,38 @@ function calcularMedida(tipo, campo) {
 
     actualizarResumen();
     validarFormulario();
+}
+
+// ==========================================
+// CÁLCULO DE MEDIDAS DE VIDRIO (centralizado)
+// Fórmula: real - descuento por modelo (DescV_Alt / DescV_Anc)
+// ==========================================
+function calcularVidrio() {
+    const m = CONFIG.modelos[state.modelo];
+    state.vidrioAlto  = (m && state.alturaReal > 0) ? state.alturaReal - (m.DescV_Alt || 0) : 0;
+    state.vidrioAncho = (m && state.anchoReal  > 0) ? state.anchoReal  - (m.DescV_Anc || 0) : 0;
+}
+
+// Aviso modal si la altura queda bloqueada por vidrio > máximo
+function avisarSiBloqueoVidrio(validacion) {
+    if (validacion.motivoVidrio && typeof aviso === 'function') {
+        aviso(`El vidrio resultante supera el máximo fabricable de ${VIDRIO_MAX_ALTO} mm de alto.\nNo es posible fabricar esta vitrina.`);
+    }
+}
+
+// Habilitar/deshabilitar "Montada con Vidrio" según bloqueo por vidrio
+function actualizarDisponibilidadVidrio(bloqueado) {
+    if (!elementos.vidrioMontado) return;
+
+    const label = elementos.vidrioMontado.closest('label');
+    elementos.vidrioMontado.disabled = bloqueado;
+    if (label) label.classList.toggle('disabled', bloqueado);
+
+    if (bloqueado && state.vidrioMontado) {
+        elementos.vidrioMontado.checked = false;
+        // Reutiliza actualizarVidrio(): limpia color, deshabilita select y revalida
+        elementos.vidrioMontado.dispatchEvent(new Event('change'));
+    }
 }
 
 // ==========================================
@@ -320,6 +373,20 @@ function validarMedida(tipo, valor) {
 
     if (valor < modelo.Minimo) {
         return { valido: false, mensaje: `⛔ Mínimo absoluto: ${modelo.Minimo} mm`, clase: 'error', bloqueado: true };
+    }
+
+    // Bloqueo duro: vidrio resultante supera el máximo fabricable
+    if (tipo === 'altura') {
+        const vidrioAlto = valor - (modelo.DescV_Alt || 0);
+        if (vidrioAlto > VIDRIO_MAX_ALTO) {
+            return {
+                valido: false,
+                mensaje: `⛔ Vidrio ${vidrioAlto} mm supera el máximo fabricable (${VIDRIO_MAX_ALTO} mm)`,
+                clase: 'error',
+                bloqueado: true,
+                motivoVidrio: true
+            };
+        }
     }
 
     if (valor > max) {
@@ -563,6 +630,13 @@ function actualizarResumen() {
             : '-';
     }
 
+    if (elementos.resumenVidrioMedidas) {
+        elementos.resumenVidrioMedidas.textContent =
+            (state.vidrioAlto > 0 && state.vidrioAncho > 0)
+                ? `${state.vidrioAlto} × ${state.vidrioAncho} mm`
+                : '-';
+    }
+
     if (elementos.resumenCantidad) {
         elementos.resumenCantidad.textContent = state.cantidad > 0
             ? `${state.cantidad} unidad${state.cantidad > 1 ? 'es' : ''}`
@@ -611,15 +685,7 @@ function actualizarResumenBisagras() {
 }
 
 function formatearColorVidrio(color) {
-    const colores = {
-        'transparente': 'Transparente',
-        'mate': 'Mate',
-        'bronce': 'Bronce',
-        'gris': 'Gris',
-        'grisoscuro': 'Gris oscuro',
-        'especial': 'Especial'
-    };
-    return colores[color] || color;
+    return CONFIG.coloresVidrio[color]?.nombre || color;
 }
 
 // ==========================================
@@ -647,29 +713,20 @@ function validarFormulario() {
 }
 
 // ==========================================
-// BOTÓN CALCULAR (placeholder fase 2)
+// BOTÓN CALCULAR → vista de presupuesto (presupuesto.js)
 // ==========================================
 function calcularPresupuesto() {
-    let precioTirador = 0;
-    if (state.tirador && state.tiradorTipo) {
-        precioTirador = CONFIG.precios[`Tirador_${state.tiradorTipo}`];
-    }
-    const precioBisagrasExtra = state.bisagrasExtras * CONFIG.precios.bisagra_extra;
-
-    console.log('=== DATOS PARA CÁLCULO ===');
-    console.log('Estado:', state);
-    console.log('Precio tirador:', precioTirador.toFixed(2), '€');
-    console.log('Precio bisagras extra:', precioBisagrasExtra.toFixed(2), '€');
-
-    alert(`Configuración lista.\n\nExtras:\n- Tirador: ${precioTirador.toFixed(2)} €\n- Bisagras extra: ${precioBisagrasExtra.toFixed(2)} €\n\n(Cálculo completo disponible próximamente)`);
+    mostrarPresupuesto();
 }
 
 // ==========================================
 // BOTÓN RESET
 // ==========================================
 function resetearDatos() {
-    if (!confirm('¿Estás seguro de que quieres borrar todos los datos?')) return;
+    confirmar('¿Estás seguro de que quieres borrar todos los datos?', ejecutarReset);
+}
 
+function ejecutarReset() {
     state.modelo = null;
     actualizarVistaPrevia();
     state.acabado = null;
@@ -691,9 +748,12 @@ function resetearDatos() {
     state.tirador = false;
     state.vidrioMontado = false;
     state.colorVidrio = '';
+    state.vidrioAlto = 0;
+    state.vidrioAncho = 0;
 
     elementos.modelos.forEach(c => c.classList.remove('selected'));
     elementos.acabados.forEach(i => i.classList.remove('selected'));
+
 
     if (elementos.alturaModulo)   elementos.alturaModulo.value = '';
     if (elementos.alturaDescuento) elementos.alturaDescuento.value = '2';
@@ -723,6 +783,7 @@ function resetearDatos() {
         elementos.vidrioMontado.checked = false;
         elementos.vidrioMontado.dispatchEvent(new Event('change'));
     }
+    actualizarDisponibilidadVidrio(false);
 
     actualizarResumen();
     validarFormulario();
