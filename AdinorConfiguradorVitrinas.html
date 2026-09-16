@@ -10,6 +10,13 @@
     window.ADINOR_CONFIG = {
         tituloModal: 'Adinor · Vitrinas'
     };
+    window.VERSION_APP = 'V.03';
+
+    // Un único sitio define la versión; la app la muestra donde haga falta.
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.app-version')
+            .forEach(el => { el.textContent = window.VERSION_APP; });
+    });
     </script>
 
     <!-- Carga del JS compartido -->
@@ -17,19 +24,19 @@
     document.write(
         location.hostname.endsWith('github.io')
         ? '<script src="https://jdurba.github.io/General/ConfigTodos.js?v=1"><\/script>'
-        : '<script src="../ConfigTodos.js?v=1"><\/script>'
+        : '<script src="../General/ConfigTodos.js?v=1"><\/script>'
     );
     </script>
     <!--   Fin de la declaración para todos   Mensajes y control de Impresion -->
 
     <style>
         :root {
-            --color-primary: #2c3e50;
+            --color-primary: #2D3A4B;
             --color-secondary: #3498db;
             --color-accent: #e74c3c;
             --color-bg: #f5f6fa;
             --color-card: #ffffff;
-            --color-text: #2c3e50;
+            --color-text: #2D3A4B;
             --color-text-light: #7f8c8d;
             --border-radius: 8px;
             --shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -42,6 +49,12 @@
             box-sizing: border-box;
         }
 
+        /* Tipografía: se usa la del sistema en toda la app. Antes había reglas
+           que pedían 'Jost' en fabricación e informe, pero la fuente no se
+           cargaba en ningún sitio (ni aquí ni en ConfigTodos.js), así que nunca
+           llegó a verse. Se retiraron. Para recuperarla haría falta el <link>
+           de Google Fonts, preferiblemente en ConfigTodos.js para todo el
+           ecosistema, ya que su modal también la pide. */
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: var(--color-bg);
@@ -58,17 +71,30 @@
         header {
             background: var(--color-primary);
             color: white;
-            padding: 18px 0;
+            padding: 0 0;
+            min-height: 72px;
+            display: flex;
+            align-items: center;
             margin-bottom: 30px;
             box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 900;
         }
 
+        header .container { width: 100%; }
+
         header h1 {
-            flex: 1;                    /* Ocupa el espacio disponible */
-            text-align: center;         /* Centra el texto */
-            font-size: 1.8rem;
+            flex: 1;
+            text-align: center;
+            font-size: 1.4rem;
             font-weight: 300;
             margin: 0;
+        }
+
+        .app-version {
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em;
+            opacity: 0.65; vertical-align: middle; margin-left: 6px;
         }
 
         .header-content {
@@ -78,14 +104,14 @@
         }
 
         .header-logo {
-            height: 70px;        /* Cambia este valor: 30px, 40px, 50px, 60px, etc. */
+            height: 46px;
             width: auto;
             object-fit: contain;
         }
 
         @media (max-width: 600px) {
             .header-logo {
-                height: 40px;    /* Tamaño en móviles */
+                height: 38px;
             }
         }
 
@@ -277,13 +303,7 @@
         }
 
         /* Formulario de Dimensiones */
-        .dimensiones-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .form-group {
+                .form-group {
             display: flex;
             flex-direction: column;
         }
@@ -321,16 +341,10 @@
             border-color: var(--color-secondary);
         }
 
-        .input-hint {
-            font-size: 0.8rem;
-            color: var(--color-text-light);
-            margin-top: 5px;
-        }
-
-        /* Panel de Resumen */
+                /* Panel de Resumen */
         .resumen-panel {
             position: sticky;
-            top: 20px;
+            top: 92px;
             height: fit-content;
         }
 
@@ -351,7 +365,7 @@
         .resumen-item {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
+            padding: 7px 0;
             border-bottom: 1px solid #ecf0f1;
         }
 
@@ -368,35 +382,10 @@
             color: var(--color-primary);
         }
 
-        .resumen-value.highlight {
-            color: var(--color-secondary);
-            font-size: 1.1rem;
-        }
-
-        .precio-total {
-            background: var(--color-primary);
-            color: white;
-            padding: 20px;
-            border-radius: var(--border-radius);
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .precio-total .label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .precio-total .value {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-top: 5px;
-        }
-
-        .btn-calcular {
+                                        .btn-calcular {
             width: 100%;
             padding: 15px;
-            background: var(--color-secondary);
+            background: #4a5b7a;
             color: white;
             border: none;
             border-radius: var(--border-radius);
@@ -408,7 +397,7 @@
         }
 
         .btn-calcular:hover {
-            background: #2980b9;
+            background: #5a6ea8;
             transform: translateY(-2px);
             box-shadow: var(--shadow-hover);
         }
@@ -440,28 +429,8 @@
             border-radius: 4px;
         }
 
-        .vitrina-svg {
-            max-width: 100%;
-            height: auto;
-        }
-
-        /* Estados de validación */
-        .error-message {
-            color: var(--color-accent);
-            font-size: 0.85rem;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .form-group.error input {
-            border-color: var(--color-accent);
-        }
-
-        .form-group.error .error-message {
-            display: block;
-        }
-
-        /* Animaciones */
+                /* Estados de validación */
+                                /* Animaciones */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -602,7 +571,7 @@
         }
 
         .medidas-header.real-fabricar {
-            color: #2c3e50;
+            color: #2D3A4B;
         }
 
         .medidas-label {
@@ -639,15 +608,7 @@
             opacity: 0.6;
         }
 
-        .bisagras-advertencia {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--color-accent);
-            margin-top: 5px;
-            min-height: 18px;
-        }
-
-        .bisagras-widget {
+                .bisagras-widget {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -661,6 +622,56 @@
         .bisagras-widget.activo {
             background: white;
             border-color: #ccc;
+        }
+
+        .bisagras-widget.deshabilitado {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .adjuntar-bisagras-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .adjuntar-bisagras-group.deshabilitado {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .adjuntar-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text, #2D3A4B);
+        }
+        .sino-toggle {
+            display: inline-flex;
+            border: 1.5px solid #ccc;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .sino-btn {
+            border: none;
+            background: white;
+            padding: 6px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #666;
+            transition: background .15s, color .15s;
+        }
+        .sino-btn + .sino-btn {
+            border-left: 1.5px solid #ccc;
+        }
+        .sino-btn:hover {
+            background: var(--hover-bg, #f0f0f0);
+        }
+        .sino-btn.activo-si {
+            background: #2e7d32;
+            color: white;
+        }
+        .sino-btn.activo-no {
+            background: #c0392b;
+            color: white;
         }
 
         .bisagras-nominal-info {
@@ -721,7 +732,7 @@
             font-size: 1rem;
         }
 
-        .bisagras-extra-precio {
+                .bisagras-mecanizado-precio {
             display: block;
             font-size: 0.8rem;
             color: var(--color-secondary);
@@ -742,6 +753,14 @@
             gap: 20px;
         }
 
+        /* Fila de vidrio: combo (izq) siempre a mitad, campo especial (der) aparece/desaparece sin mover el layout */
+        .vidrio-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: end;
+        }
+
         @media (max-width: 600px) {
             .medidas-grid {
                 grid-template-columns: 80px 1fr 1fr 1fr;
@@ -753,6 +772,10 @@
             }
             
             .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .vidrio-row {
                 grid-template-columns: 1fr;
             }
         }
@@ -774,6 +797,60 @@
             margin: 20px 0;
         }
 
+        .datos-pedido {
+            margin: 16px 0 4px;
+            padding-top: 14px;
+            border-top: 1px solid #e8e8e8;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .datos-pedido .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .datos-pedido label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .datos-pedido label .opcional {
+            font-weight: 400;
+            color: var(--color-text-light);
+        }
+
+        .datos-pedido input,
+        .datos-pedido textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .datos-pedido input:focus,
+        .datos-pedido textarea:focus {
+            border-color: var(--color-secondary);
+        }
+
+        .datos-pedido textarea {
+            resize: vertical;
+            min-height: 56px;
+        }
+
+        .nota-contador {
+            align-self: flex-end;
+            font-size: 0.7rem;
+            color: var(--color-text-light);
+        }
+
         .bisagras-info {
             display: flex;
             flex-direction: column;
@@ -781,14 +858,7 @@
             gap: 2px;
         }
 
-        .bisagras-extra {
-            font-size: 0.75rem;
-            color: var(--color-accent);
-            font-weight: 500;
-            margin-top: 2px;
-        }
-
-        .btn-reset {
+                .btn-reset {
             width: 100%;
             padding: 12px;
             margin-top: 10px;
@@ -806,12 +876,7 @@
             color: var(--color-accent);
         }
 
-        .resumen-item.incompleto .resumen-value {
-            color: #ccc;
-            font-style: italic;
-        }
-
-        .resumen-item.completo .resumen-value {
+                .resumen-item.completo .resumen-value {
             color: var(--color-primary);
         }
 
@@ -842,10 +907,6 @@
             gap: 4px;
         }
 
-        .medidas-input input {
-            width: 100%;
-        }
-
         .medidas-mensaje {
             min-height: 16px;
             font-size: 0.75rem;
@@ -869,6 +930,16 @@
             font-style: italic;
         }
         
+        /* Aviso bajo la casilla de tirador: explica por qué está deshabilitada
+           (perfil sin tirador, o medidas insuficientes). Vacío = oculto. */
+        .tirador-aviso {
+            margin: 4px 0 0 30px;
+            font-size: 0.75rem;
+            line-height: 1.3;
+            color: #f39c12;
+        }
+        .tirador-aviso:empty { display: none; }
+
         /* Selector de Tiradores */
         .tiradores-selector {
             display: none;
@@ -955,19 +1026,8 @@
             line-height: 1.2;
         }
         
-        .tirador-medidas {
-            font-size: 0.75rem;
-            color: var(--color-text-light);
-            margin-top: 2px;
-        }
-        
-        .tirador-precio {
-            font-size: 0.85rem;
-            color: var(--color-secondary);
-            font-weight: 600;
-            margin-top: 4px;
-        }
-        
+                
+                
         @media (max-width: 600px) {
             .tiradores-grid {
                 grid-template-columns: 1fr;
@@ -978,32 +1038,33 @@
             }
         }
 
-        /* Botón volver al menú */
+        /* Botón volver al menú — mismo diseño que el resto de pantallas */
         #cab-btn.btn-grad {
-            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-width: 115px;
+            padding: 9px 16px;
+            font-size: 0.85rem;
+            letter-spacing: 0.03em;
+            color: #fff;
+            background: #4a5b7a;
             border: none;
-            border-radius: 6px;
-            color: white;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 10px 18px;
             text-decoration: none;
-            transition: opacity 0.3s, transform 0.2s, box-shadow 0.2s;
+            transition: background 0.2s ease, transform 0.2s ease;
             white-space: nowrap;
             flex-shrink: 0;
         }
 
         #cab-btn.btn-grad:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+            background: #5a6ea8;
+            transform: translateX(2px);
         }
 
         @media (max-width: 600px) {
             #cab-btn.btn-grad {
                 font-size: 0.8rem;
                 padding: 8px 12px;
+                min-width: 0;
             }
         }
 
@@ -1018,52 +1079,53 @@
             background: var(--color-bg);
         }
         .fab-topbar {
-            background: var(--color-primary);
-            color: white;
-            padding: 12px 24px;
+            background: #2D3A4B;
+            color: #fff;
+            height: 72px;
+            padding: 0 28px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 10px;
             flex-shrink: 0;
-            box-shadow: var(--shadow);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
         }
+        .fab-topbar .fab-barra-logo { height: 46px; width: auto; }
         .fab-topbar h2 {
             flex: 1;
             font-size: 1.05rem;
-            font-weight: 400;
+            font-weight: 500;
+            letter-spacing: 0.06em;
             margin: 0;
             text-align: center;
         }
-        .fab-btn-volver {
-            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 6px;
-            color: white;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 10px 18px;
-            transition: opacity 0.3s, transform 0.2s, box-shadow 0.2s;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        .fab-btn-volver:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
-        }
+        .fab-btn-volver,
         .fab-btn-pdf-top {
-            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-width: 115px;
+            padding: 9px 16px;
+            font-size: 0.85rem;
+            letter-spacing: 0.03em;
+            color: #fff;
+            background: #4a5b7a;
             border: none;
-            border-radius: 6px;
-            color: white;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 10px 18px;
-            transition: opacity 0.3s, transform 0.2s, box-shadow 0.2s;
+            transition: background 0.2s ease, transform 0.2s ease;
             white-space: nowrap;
             flex-shrink: 0;
+        }
+        .fab-btn-volver:hover,
+        .fab-btn-pdf-top:hover {
+            background: #5a6ea8;
+            transform: translateX(2px);
+        }
+        .fab-btn-pdf-top:disabled {
+            background: #9aa3b2;
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
+        .fab-btn-pdf-top:disabled:hover {
+            background: #9aa3b2;
+            transform: none;
         }
         .fab-layout {
             flex: 1;
@@ -1085,6 +1147,153 @@
             padding: 10px 12px;
             margin-bottom: 16px;
             border: 1px solid #e8e8e8;
+        }
+        /* --- Columna central: bisagras --- */
+        .fab-col-bisagras {
+            width: 285px;
+            flex-shrink: 0;
+            overflow-y: auto;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 16px 16px;
+        }
+        .fab-bis-noadj {
+            font-size: 0.85rem;
+            color: var(--color-text-light);
+            font-style: italic;
+            padding: 6px 0;
+        }
+        .fab-bis-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .fab-bis-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .fab-bis-card:hover { border-color: var(--color-secondary); }
+        .fab-bis-card.selected {
+            border-color: var(--color-secondary);
+            background: #ebf5fb;
+            color: var(--color-secondary);
+        }
+        .fab-bis-card img {
+            width: 46px; height: 46px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+        .fab-bis-card-nombre { font-size: 0.8rem; font-weight: 500; }
+        .fab-bis-card.selected .fab-bis-card-nombre { font-weight: 700; }
+        .fab-bis-base-img {
+            width: 100%;
+            max-width: 180px;
+            display: block;
+            margin: 4px auto 10px;
+        }
+        .fab-bis-toggle {
+            display: flex;
+            gap: 7px;
+            margin-bottom: 16px;
+        }
+        .fab-bis-toggle button {
+            flex: 1;
+            padding: 8px 6px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--color-text);
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .fab-bis-toggle button:hover { border-color: var(--color-secondary); }
+        .fab-bis-toggle button.selected {
+            border-color: var(--color-secondary);
+            background: #ebf5fb;
+            color: var(--color-secondary);
+            font-weight: 700;
+        }
+        /* Botón zoom junto al título de montaje */
+        .fab-bis-titulo-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 7px;
+        }
+        .fab-bis-zoom {
+            border: 1px solid var(--color-secondary);
+            background: white;
+            color: var(--color-secondary);
+            border-radius: 5px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 9px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .fab-bis-zoom:hover { background: #ebf5fb; }
+        /* Popup zoom imágenes montaje */
+        .fab-bis-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .fab-bis-modal {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            max-width: 90vw;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .fab-bis-modal-titulo {
+            font-size: 1.4rem;
+            color: var(--color-primary);
+            margin: 0 0 16px;
+            text-align: center;
+        }
+        .fab-bis-modal-imgs {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .fab-bis-modal-item { text-align: center; }
+        .fab-bis-modal-item img {
+            width: 220px;
+            height: 220px;
+            object-fit: contain;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        .fab-bis-modal-item span {
+            display: block;
+            margin-top: 8px;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+        .fab-bis-modal-cerrar {
+            display: block;
+            margin: 18px auto 0;
+            padding: 8px 24px;
+            border: none;
+            border-radius: 6px;
+            background: var(--color-secondary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
         }
         .fab-ficha-fila {
             display: flex;
@@ -1233,10 +1442,329 @@
             padding: 6px;
         }
         .fab-svg-content svg { max-height: 100%; max-width: 100%; }
+
+        /* ═══════════════════════════════════════════
+           INFORME PRESUPUESTO — HOJA A4 (lenguaje ecosistema)
+        ═══════════════════════════════════════════ */
+
+        /* Barra fija de acciones (banda oscura superior) */
+        #presu-barra {
+            display: none;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #2D3A4B;
+            height: 72px; padding: 0 28px;
+            align-items: center; gap: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+        #presu-barra.visible { display: flex; }
+        #presu-barra .barra-logo { height: 46px; width: auto; }
+        #presu-barra .presu-barra-titulo {
+            flex: 1;
+            text-align: center;
+            font-size: 1.05rem; font-weight: 500;
+            color: #fff; letter-spacing: 0.06em;
+        }
+        #presu-barra button {
+            min-width: 115px; padding: 9px 16px;
+            font-size: 0.85rem;
+            color: #fff; background: #4a5b7a; border: none; border-radius: 4px;
+            cursor: pointer; transition: background 0.2s ease, transform 0.2s ease;
+            letter-spacing: 0.03em;
+        }
+        #presu-barra button:hover { background: #5a6ea8; transform: translateX(2px); }
+
+        body.informe-activo { background: #e4e5e3; }
+
+        /* Hoja A4 */
+        #presuVista {
+            display: none;
+            padding: 90px 0 40px;   /* deja hueco para la barra fija */
+        }
+        #presu-informe-container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 18mm 16mm;
+            box-sizing: border-box;
+            background: #ffffff;
+            box-shadow: 0 3px 16px rgba(0,0,0,0.18);
+            color: #222;
+        }
+
+        /* Cabecera del informe */
+        .informe-header { border-bottom: 2px solid #2D3A4B; padding-bottom: 12px; margin-bottom: 16px; }
+        .informe-header-top { display: flex; align-items: center; gap: 16px; }
+        .informe-header-logo { height: 48px; width: auto; flex-shrink: 0; }
+        .informe-header h1 {
+            flex: 1; margin: 0; text-align: center;
+            font-weight: 600;
+            font-size: 18px; letter-spacing: 0.5px; text-transform: uppercase;
+            color: #2D3A4B; line-height: 1.2;
+        }
+        .informe-fecha { font-size: 11px; color: #888; white-space: nowrap; }
+
+        /* Bloques */
+        .bloque-titulo {
+            background: #d7d8d6; border: 1.5px solid #b7b8b6;
+            padding: 6px 16px; border-radius: 4px;
+            font-weight: 600; font-size: 12px; letter-spacing: 0.06em;
+            text-transform: uppercase; color: #333;
+            margin: 16px 0 10px;
+        }
+
+        /* Parámetros — dos columnas: imagen del perfil + datos línea a línea */
+        .presu-params-grid {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        .presu-params-img {
+            display: flex; align-items: flex-start; justify-content: center;
+            padding-top: 4px;
+        }
+        .presu-params-img img {
+            max-width: 100%; max-height: 260px; width: auto; height: auto;
+            border: 1px solid #ddd; border-radius: 4px; background: #fff;
+        }
+        .presu-params-img .preview-placeholder {
+            font-size: 11px; color: #999; font-style: italic;
+        }
+        @media (max-width: 800px) {
+            .presu-params-grid { grid-template-columns: 1fr; }
+            .presu-params-img { display: none; }
+        }
+
+        .informe-aviso-templado {
+            margin: 14px 0 0;
+            padding: 8px 14px;
+            background: #fff8e6;
+            border: 1px solid #e6c65c;
+            border-radius: 4px;
+            font-size: 12px; font-weight: 600; color: #7a5c00;
+            letter-spacing: 0.02em;
+        }
+
+        /* Importar configuración — mismo peso visual que Resetear, sin competir
+           con el botón principal. */
+        .btn-importar {
+            width: 100%;
+            margin-top: 8px;
+            padding: 10px;
+            background: #fff;
+            color: var(--color-primary);
+            border: 2px dashed #c3ccd8;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem; font-weight: 600; font-family: inherit;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .btn-importar:hover { background: #f2f6fb; border-color: var(--color-secondary); }
+
+        /* Banda de configuración importada (solo lectura) */
+        #fabBandaImportado {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px;
+            padding: 8px 16px;
+            background: #fff4d6;
+            border-bottom: 1px solid #e3c55e;
+        }
+        .fab-imp-aviso {
+            font-size: 0.85rem; font-weight: 700; color: #7a5c00;
+            display: flex; flex-direction: column; gap: 1px;
+        }
+        .fab-imp-origen { font-weight: 400; font-size: 0.75rem; color: #8a6d10; }
+        .fab-imp-campos {
+            display: flex; align-items: flex-end; gap: 12px;
+            margin-left: auto; flex: 1 1 460px; max-width: 620px;
+        }
+        .fab-imp-campos label {
+            display: flex; flex-direction: column; gap: 3px; flex: 1 1 0;
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.03em; color: #7a5c00;
+        }
+        .fab-imp-campos input {
+            width: 100%; height: 38px;
+            padding: 0 10px; border: 1px solid #d3b74e; border-radius: 4px;
+            font-size: 0.9rem; font-family: inherit; background: #fff;
+        }
+        .fab-imp-campos input:focus { outline: 2px solid #d3b74e; outline-offset: -1px; }
+        /* Mismo aspecto que Presupuesto y Generar PDF: es una acción de barra,
+           no un campo. La altura se fija a mano (no se deja al cálculo del
+           navegador) para que coincida exactamente con la de los inputs. */
+        /* El botón vive dentro de un label igual que los campos, con un hueco
+           en blanco donde ellos llevan su etiqueta. Así los tres bloques tienen
+           la misma estructura y la alineación no depende del cálculo del flex. */
+        .fab-imp-campos label.fab-imp-accion { flex: 0 0 auto; }
+
+        .fab-imp-salir {
+            height: 38px; min-width: 115px;
+            padding: 0 16px;
+            font-size: 0.85rem; font-family: inherit;
+            letter-spacing: 0.03em;
+            color: #fff; background: #4a5b7a;
+            border: none; border-radius: 4px;
+            cursor: pointer; white-space: nowrap;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .fab-imp-salir:hover { background: #5a6ea8; transform: translateX(2px); }
+        /* Atenuación de los controles bloqueados: el disabled lo pone el JS,
+           esto solo lo hace evidente de un vistazo. */
+        .fab-importado #fabInputs,
+        .fab-importado #fabBisagras { opacity: 0.72; }
+
+        /* Observaciones de cabecera — bloque propio, entre parámetros y aviso.
+           No va en el grid de artículos: acompaña al documento, no define la vitrina. */
+        .informe-nota {
+            margin: 12px 0 0;
+            padding: 8px 12px;
+            background: #f7f9fc;
+            border: 1px solid #cbd5e1;
+            border-left: 3px solid #2D3A4B;
+            border-radius: 4px;
+            font-size: 12px; line-height: 1.35;
+        }
+        .informe-nota .nota-label {
+            display: block;
+            font-weight: bold; color: #2D3A4B;
+            font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
+            margin-bottom: 3px;
+        }
+        /* Copiable con un clic, igual que las celdas de la tabla. */
+        .informe-nota [data-copia] {
+            display: block; cursor: pointer; position: relative;
+            padding: 2px 20px 2px 2px;
+            white-space: pre-wrap;
+            transition: background 0.12s ease;
+        }
+        .informe-nota [data-copia]:hover { background: #dbe7f3; }
+        .informe-nota [data-copia]:hover::after {
+            content: '📋'; position: absolute; right: 4px; top: 2px;
+            font-size: 10px; opacity: 0.45; pointer-events: none;
+        }
+        .informe-nota [data-copia].copiada { background: #cfe6cf; }
+        .informe-nota [data-copia].copiada::after { content: '✓'; opacity: 0.8; }
+
+        /* Parámetros — etiqueta izq / valor der */
+        .informe-params { display: flex; flex-direction: column; gap: 0; padding: 0 4px; }
+                                .campo-informe {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; padding: 1.5px 2px; line-height: 1.15;
+            border-bottom: 1px dotted #bbb;
+        }
+        .campo-informe label {
+            font-weight: bold; font-size: 12px; color: #555;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .campo-informe .valor {
+            font-size: 13px; font-weight: 300; color: #222; text-align: right;
+        }
+
+        /* Tabla de artículos (estilo ecosistema) */
+        .tabla-informe { width: 100%; border-collapse: collapse; margin-top: 6px; }
+        .tabla-informe th, .tabla-informe td {
+            border: 1px solid #333; padding: 6px 10px; font-size: 12px;
+        }
+        .tabla-informe th {
+            background: #ddd; font-weight: bold; text-align: left;
+            letter-spacing: 0.04em;
+        }
+        .tabla-informe td.cod { font-weight: 600; white-space: nowrap; }
+        .tabla-informe th.num, .tabla-informe td.num { text-align: right; }
+        .tabla-informe .incluido { color: #999; font-style: italic; }
+
+        /* Insignia "Dto 100%": marca las líneas incluidas en el precio de la
+           vitrina (bisagras KABI/HAVA, tarifa 0). Informativa: el descuento
+           real se aplica en Odoo, no aquí. La genera presupuesto.js. */
+        .tabla-informe .dto-badge {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            background: #e8eef7;
+            color: #2D3A4B;
+            font-size: 0.72rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .tabla-informe .obs td { font-style: italic; color: #555; }
+
+        /* Celdas copiables: se resaltan al pasar el ratón; un clic copia. */
+        .tabla-informe td[data-copia] {
+            cursor: pointer; position: relative;
+            transition: background 0.12s ease;
+        }
+        .tabla-informe td[data-copia]:hover { background: #dbe7f3; }
+        .tabla-informe td[data-copia]:hover::after {
+            content: '📋'; position: absolute; right: 5px; top: 50%;
+            transform: translateY(-50%); font-size: 10px; opacity: 0.45;
+            pointer-events: none;
+        }
+        .tabla-informe td[data-copia].copiada { background: #cfe6cf; }
+        .tabla-informe td[data-copia].copiada::after { content: '✓'; opacity: 0.8; }
+
+        .tabla-informe tfoot td {
+            border: none; border-top: 2px solid #2D3A4B;
+            font-weight: bold; font-size: 14px; padding-top: 12px;
+        }
+        .tabla-informe tfoot td.aviso-copia {
+            text-align: left; font-weight: 400; font-style: italic;
+            font-size: 12.5px; color: #777;
+        }
+
+        .informe-consultar-motivo {
+            margin-top: 14px; font-size: 12px; font-style: italic; color: #b7791f;
+        }
+        .informe-version { margin-top: 18px; text-align: right; font-size: 9px; color: #aaa; }
+
+        /* Forzar colores en PDF/impresión */
+        #presu-informe-container * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        @media (max-width: 800px) {
+            #presu-informe-container { width: 100%; min-height: 0; padding: 24px 18px; }
+        }
+
+        /* Botón de ayuda (?) y popover — patrón compartido del ecosistema */
+        .btn-help {
+            width: 20px; height: 16px; border-radius: 50%;
+            border: 1.5px solid #c4b5fd; background: #f5f3ff;
+            color: #702dee; font-size: 11px; font-weight: 700;
+            cursor: pointer; flex-shrink: 0; line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s; margin-top: 2px;
+        }
+        .btn-help:hover { background: #ede9fe; }
+        #help-popover {
+            position: fixed; z-index: 200;
+            background: #f0fdf4; border: 2px solid #bbf7d0;
+            border-radius: 10px; padding: 12px 14px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.45);
+            max-width: 440px; font-size: 14px; color: #374151; line-height: 1.6;
+            display: none; opacity: 0; transition: opacity 0.15s;
+        }
+        #help-popover.visible { display: block; opacity: 1; }
+        #help-popover::before {
+            content: ''; position: absolute; top: -6px; left: 18px;
+            width: 10px; height: 10px; background: #f0fdf4;
+            border-left: 1px solid #bbf7d0; border-top: 1px solid #bbf7d0;
+            transform: rotate(45deg);
+        }
+        #help-popover strong { color: #111; font-weight: 600; }
     </style>
 </head>
 
 <body>
+
+<!-- Popover de ayuda (?) — reglas de cotas de bisagras -->
+<div id="help-popover">
+    <strong>●  B1 y B2</strong> (distancia al extremo superior e inferior): mínimo 70 mm, por defecto 100 mm.<br><br>
+    <strong>●  C</strong> (separación entre bisagras): mínimo 80 mm cada hueco.<br><br>
+    <strong>●  </strong>El nº de bisagras viene calculado del anterior formulario según la altura.<br><br>
+    <strong>●  </strong>Si alguna cota queda en <strong>rojo</strong>, ajusta B1/B2 o reparte los C hasta que todas lleguen al mínimo.<br><br>
+    <strong>●  </strong>El último valor C (en amarillo) no es editable: es el resultado final tras repartir el resto de medidas.<br><br>
+    <strong>●  </strong><em>No se puede generar el PDF ni el presupuesto mientras haya cotas por debajo del mínimo.</em>
+</div>
 
     <header id="mainHeader">
         <div class="container">
@@ -1244,8 +1772,8 @@
                 <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/LogoAdinorBlanco.png" 
                     alt="Adinor Logo" 
                     class="header-logo">
-                <h1>Configurador de Vitrinas de Aluminio</h1>
-                <button id="cab-btn" class="btn-grad" onclick="window.location.href='https://jdurba.github.io/General/index.html'">← Volver al menú</button>
+                <h1>Configurador de Vitrinas de Aluminio <span class="app-version" id="appVersionHeader"></span></h1>
+                <button id="cab-btn" class="btn-grad" onclick="volverAlMenu()">← Volver al menú</button>
             </div>
         </div>
     </header>
@@ -1392,7 +1920,7 @@
 
                         <div class="modelo-card" data-modelo="HAVASP">
                             <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/HavaSP_cotas.jpg" 
-                                alt="Modelo HAVA" 
+                                alt="Modelo HAVASP" 
                                 class="modelo-img"
                                 onerror="this.style.display='none'">
                             <div class="modelo-placeholder">HAVA S/P</div>
@@ -1498,7 +2026,20 @@
                             </div>
                         </div>
 
+                        <div class="acabado-item" data-acabado="ESP">
+                            <div class="acabado-muestra" style="background: #188b14;"></div>
+                            <div class="acabado-info">
+                                <div class="acabado-nombre">Especial</div>
+                            </div>
+                        </div>
 
+                    </div>
+
+                    <!-- Campo texto para acabado especial (solo visible si ESP seleccionado) -->
+                    <div class="form-group especial-group" id="acabadoEspecialGroup" style="display: none; margin-top: 15px;">
+                        <label for="acabadoEspecial">Especifica el acabado especial</label>
+                        <input type="text" id="acabadoEspecial" name="acabadoEspecial"
+                               placeholder="Ej.: RAL 7016 texturado, anodizado oro..." autocomplete="off" maxlength="80">
                     </div>
                 </div>
 
@@ -1520,26 +2061,26 @@
                             <!-- Fila Altura -->
                             <div class="medidas-label">Altura puerta</div>
                             <div class="medidas-input">
-                                <input type="number" id="alturaModulo" name="alturaModulo" placeholder="Ej: 910" onkeydown="if(event.key==='Enter')this.blur()">
+                                <input type="number" id="alturaModulo" name="alturaModulo" autocomplete="off" placeholder="Ej: 910" onkeydown="if(event.key==='Enter')this.blur()">
                             </div>
                             <div class="medidas-input">
-                                <input type="number" id="alturaDescuento" name="alturaDescuento" value="2" min="0" onkeydown="if(event.key==='Enter')this.blur()">
+                                <input type="number" id="alturaDescuento" name="alturaDescuento" autocomplete="off" value="2" min="0" onkeydown="if(event.key==='Enter')this.blur()">
                             </div>
                             <div class="medidas-input real-fabricar">
-                                <input type="number" id="alturaReal" name="alturaReal" class="readonly" onkeydown="if(event.key==='Enter')this.blur()">
+                                <input type="number" id="alturaReal" name="alturaReal" class="readonly" autocomplete="off" onkeydown="if(event.key==='Enter')this.blur()">
                                 <span class="medidas-mensaje" id="alturaMensaje"></span>
                             </div>
                             
                             <!-- Fila Anchura -->
                             <div class="medidas-label">Ancho puerta</div>
                             <div class="medidas-input">
-                                <input type="number" id="anchoModulo" name="anchoModulo" placeholder="Ej: 286" onkeydown="if(event.key==='Enter')this.blur()">
+                                <input type="number" id="anchoModulo" name="anchoModulo" autocomplete="off" placeholder="Ej: 286" onkeydown="if(event.key==='Enter')this.blur()">
                             </div>
                             <div class="medidas-input">
-                                <input type="number" id="anchoDescuento" name="anchoDescuento" value="2" min="0" onkeydown="if(event.key==='Enter')this.blur()">
+                                <input type="number" id="anchoDescuento" name="anchoDescuento" autocomplete="off" value="2" min="0" onkeydown="if(event.key==='Enter')this.blur()">
                             </div>
                             <div class="medidas-input real-fabricar">
-                                <input type="number" id="anchoReal" name="anchoReal" class="readonly" onkeydown="if(event.key==='Enter')this.blur()">
+                                <input type="number" id="anchoReal" name="anchoReal" class="readonly" autocomplete="off" onkeydown="if(event.key==='Enter')this.blur()">
                                 <span class="medidas-mensaje" id="anchoMensaje"></span>
                             </div>
                         </div>
@@ -1547,6 +2088,20 @@
 
                     <!-- Bisagras y cantidad -->
                     <div class="opciones-form">
+                        <div style="display:flex; gap:28px; flex-wrap:wrap; align-items:center; margin-bottom:12px;">
+                            <label class="checkbox-item" style="margin-bottom:0">
+                                <input type="checkbox" id="sinMecanizado" name="sinMecanizado">
+                                <span class="checkmark"></span>
+                                Sin mecanizado de bisagras
+                            </label>
+                            <div class="adjuntar-bisagras-group" id="adjuntarBisagrasGroup">
+                                <span class="adjuntar-label">¿Adjuntamos Bisagras?</span>
+                                <div class="sino-toggle">
+                                    <button type="button" class="sino-btn" id="adjuntarSi" data-valor="si">Sí</button>
+                                    <button type="button" class="sino-btn" id="adjuntarNo" data-valor="no">No</button>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label id="bisagrasLabel" class="disabled">Número de Bisagras</label>
@@ -1558,13 +2113,12 @@
                                         <button class="bisagras-btn" id="bisagrasmas" disabled>+</button>
                                     </div>
                                 </div>
-                                <span class="bisagras-extra-precio" id="bisagrasExtraPrecio"></span>
-                                <span class="bisagras-advertencia" id="bisagrasAdvertencia"></span>
+                                <span class="bisagras-mecanizado-precio" id="bisagrasMecanizadoPrecio"></span>
                             </div>
 
                             <div class="form-group">
                                 <label for="cantidad">Cantidad de Vitrinas</label>
-                                <input type="number" id="cantidad" name="cantidad" min="1" value="1">
+                                <input type="number" id="cantidad" name="cantidad" min="1" value="1" autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -1582,12 +2136,13 @@
                                     <span class="checkmark"></span>
                                     Tirador mecanizado
                                 </label>
+                                <p class="tirador-aviso" id="tiradorAviso"></p>
                                 
                                 <!-- Selector de tiradores -->
                                 <div class="tiradores-selector" id="tiradoresSelector">
                                     <div class="tiradores-titulo">Selecciona el tipo de tirador:</div>
                                     <div class="tiradores-grid">
-                                        <div class="tirador-card" data-tirador="126x35">
+                                        <div class="tirador-card" data-tirador="79971">
                                             <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/126x35.jpg" 
                                                 alt="Tirador 126x35" 
                                                 class="tirador-img"
@@ -1595,12 +2150,20 @@
                                             <div class="tirador-nombre">126 × 35 mm</div>
                                         </div>
                                         
-                                        <div class="tirador-card" data-tirador="37x16">
+                                        <div class="tirador-card" data-tirador="7997">
                                             <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/37x16.jpg" 
                                                 alt="Tirador 37x16" 
                                                 class="tirador-img"
                                                 onerror="this.style.display='none'">
                                             <div class="tirador-nombre">37 × 16 mm</div>
+                                        </div>
+
+                                        <div class="tirador-card" data-tirador="7794">
+                                            <img src="https://raw.githubusercontent.com/Jdurba/Vitrinas/main/Imagenes/48x14.jpg" 
+                                                alt="Tirador 48x14" 
+                                                class="tirador-img"
+                                                onerror="this.style.display='none'">
+                                            <div class="tirador-nombre">48 × 14 mm</div>
                                         </div>
                                     </div>
                                 </div>
@@ -1608,23 +2171,30 @@
                                 <label class="checkbox-item">
                                     <input type="checkbox" id="vidrioMontado" name="vidrioMontado">
                                     <span class="checkmark"></span>
-                                    Montada con Vidrio
+                                    Montada con vidrio templado de 4 mm
                                 </label>
                             </div>
                         </div>
 
-                        <!-- Combo de color de vidrio -->
-                        <div class="form-group full-width" id="colorVidrioGroup">
-                            <label for="colorVidrio" id="colorVidrioLabel" class="disabled">Color del Vidrio</label>
-                            <select id="colorVidrio" name="colorVidrio" disabled>
-                                <option value="">Selecciona color...</option>
-                                <option value="transparente">Transparente</option>
-                                <option value="mate">Mate</option>
-                                <option value="bronce">Bronce</option>
-                                <option value="gris">Gris</option>
-                                <option value="grisoscuro">Gris oscuro</option>
-                                <option value="especial">Especial</option>
-                            </select>
+                        <!-- Combo de color de vidrio (mitad) + campo especial (mitad derecha) -->
+                        <div class="vidrio-row" id="colorVidrioGroup">
+                            <div class="form-group">
+                                <label for="colorVidrio" id="colorVidrioLabel" class="disabled">Color del Vidrio</label>
+                                <select id="colorVidrio" name="colorVidrio" disabled>
+                                    <option value="">Selecciona color...</option>
+                                    <option value="transparente">Transparente</option>
+                                    <option value="mate">Mate</option>
+                                    <option value="bronce">Bronce</option>
+                                    <option value="gris">Gris</option>
+                                    <option value="grisoscuro">Gris oscuro</option>
+                                    <option value="especial">Especial</option>
+                                </select>
+                            </div>
+                            <div class="form-group especial-group" id="vidrioEspecialGroup" style="display: none;">
+                                <label for="vidrioEspecial">Especifica el vidrio especial</label>
+                                <input type="text" id="vidrioEspecial" name="vidrioEspecial"
+                                       placeholder="Ej.: templado 6 mm serigrafiado..." autocomplete="off" maxlength="80">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1660,16 +2230,25 @@
                         </div>
                         
                         <div class="resumen-item">
+                            <span class="resumen-label">Medida vidrio:</span>
+                            <span class="resumen-value" id="resumenVidrioMedidas">-</span>
+                        </div>
+                        
+                        <div class="resumen-item">
                             <span class="resumen-label">Cantidad:</span>
                             <span class="resumen-value" id="resumenCantidad">-</span>
                         </div>
                         
                         <div class="resumen-item">
-                            <span class="resumen-label">Bisagras:</span>
+                            <span class="resumen-label">Mecanizado de Bisagras:</span>
                             <div class="resumen-value bisagras-info">
                                 <span id="resumenBisagras">-</span>
-                                <span class="bisagras-extra" id="resumenBisagrasExtra"></span>
                             </div>
+                        </div>
+
+                        <div class="resumen-item">
+                            <span class="resumen-label">Adjuntamos bisagras:</span>
+                            <span class="resumen-value" id="resumenAdjuntar">-</span>
                         </div>
 
                         <div class="resumen-item">
@@ -1683,33 +2262,48 @@
                         </div>
                     </div>
 
-                    <div class="precio-total">
-                        <div class="label">PRECIO ESTIMADO</div>
-                        <div class="value" id="precioTotal">0,00 €</div>
+                    <div class="datos-pedido">
+                        <div class="form-group">
+                            <label for="numPedido">Nº Pedido <span class="opcional">(obligatorio para exportar)</span></label>
+                            <input type="text" id="numPedido" name="numPedido" placeholder="Ej: S2200" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="cliente">Cliente / Referencia <span class="opcional">(obligatorio para exportar)</span></label>
+                            <input type="text" id="cliente" name="cliente" placeholder="Ej: Integrale, S.A." autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="nota">Observaciones <span class="opcional">(opcional)</span></label>
+                            <textarea id="nota" name="nota" rows="3" maxlength="250"
+                                      placeholder="Nota que acompaña al documento"></textarea>
+                            <span class="nota-contador" id="notaContador">0 / 250</span>
+                        </div>
                     </div>
 
-                    <button class="btn-calcular" id="btnCalcular" disabled>
-                        Calcular Presupuesto
-                    </button>
-
                     <button class="btn-calcular" id="btnFabricar" disabled>
-                        Paso a fabricación
+                        Siguiente →
                     </button>
 
                     <button class="btn-reset" id="btnReset">
                         Resetear Datos
                     </button>
+
+                    <button type="button" class="btn-importar" id="btnImportar">
+                        📂 Importar configuración
+                    </button>
+                    <input type="file" id="inputImportar" accept=".advit,.txt" style="display:none">
                 </div>
             </div>
         </div>
     </div>
 
-
-<script src="js/jspdf_umd_min.js"></script>
-<script src="js/config.js" defer></script>
-<script src="js/configurador.js" defer></script>
-<script src="js/fabricacion.js" defer></script>
-<script src="js/pdfVitrinas.js" defer></script>
+<script src="https://jdurba.github.io/General/jspdf_umd_min.js"></script>
+<script src="js/autotable_min.js?v=1"></script>
+<script src="js/config.js?v=6" defer></script>
+<script src="js/configurador.js?v=10" defer></script>
+<script src="js/fabricacion.js?v=11" defer></script>
+<script src="js/pdfVitrinas.js?v=12" defer></script>
+<script src="js/presupuesto.js?v=17" defer></script>
+<script src="js/intercambio.js?v=9" defer></script>
 
 
 <!-- ==========================================
@@ -1717,12 +2311,20 @@
      ========================================== -->
 <div id="fabVista" style="display:none">
 
-    <!-- Barra superior -->
+    <!-- Barra superior (estilo ecosistema) -->
     <div class="fab-topbar">
-        <button class="fab-btn-volver" id="fabBtnVolver">← Volver a configuración</button>
-        <h2>🔩 Paso a Fabricación</h2>
-        <button class="fab-btn-pdf-top" id="fabBtnPDF" title="Disponible próximamente">📄 Generar PDF</button>
+        <img class="fab-barra-logo"
+             src="https://jdurba.github.io/General/img/LogoAdinorBlanco.png"
+             alt="ADINOR" />
+        <h2>Vitrinas · Hoja de fabricación <span class="app-version" id="appVersionFab"></span></h2>
+        <button class="fab-btn-volver" id="fabBtnVolver">⪡ Atrás</button>
+        <button class="fab-btn-pdf-top" id="fabBtnPresupuesto" disabled title="Selecciona las bisagras">🧾 Presupuesto</button>
+        <button class="fab-btn-pdf-top" id="fabBtnPDF" disabled title="Selecciona las bisagras">📄 Generar PDF</button>
+        <button type="button" class="fab-btn-pdf-top" id="fabBtnExportar" title="Exportar configuración para enviar">💾 Exportar</button>
     </div>
+
+    <!-- Solo visible tras importar: aviso de solo lectura + los dos campos editables -->
+    <div id="fabBandaImportado" style="display:none"></div>
 
     <!-- Layout: izquierda (inputs) + derecha (SVGs) -->
     <div class="fab-layout">
@@ -1734,6 +2336,11 @@
 
             <!-- Inputs dinámicos (mano, B/C, tirador, Z) -->
             <div id="fabInputs"></div>
+        </div>
+
+        <!-- Columna central: selección de bisagras (producto) -->
+        <div class="fab-col-bisagras">
+            <div id="fabBisagras"></div>
         </div>
 
         <!-- Columna derecha: dos SVGs -->
@@ -1750,6 +2357,98 @@
 
     </div>
 </div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     BARRA DE ACCIONES DEL PRESUPUESTO (banda fija superior)
+══════════════════════════════════════════════════════════════ -->
+<div id="presu-barra">
+    <img class="barra-logo"
+         src="https://jdurba.github.io/General/img/LogoAdinorBlanco.png"
+         alt="ADINOR" />
+    <span class="presu-barra-titulo">Vitrinas · Presupuesto</span>
+    <button type="button" id="presuBtnVolver">⪡ Atrás</button>
+    <button type="button" id="presuBtnPDF">📄 Generar PDF</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     VISTA PRESUPUESTO — Informe en hoja A4
+══════════════════════════════════════════════════════════════ -->
+<section id="presuVista">
+    <div id="presu-informe-container">
+
+        <div class="informe-header">
+            <div class="informe-header-top">
+                <img class="informe-header-logo"
+                     src="https://jdurba.github.io/General/img/LOGO_2025_Negro.png"
+                     alt="Adinor" />
+                <h1>Vitrinas · Presupuesto</h1>
+                <span class="informe-fecha" id="presuFecha"></span>
+            </div>
+        </div>
+
+        <div class="bloque-titulo">Parámetros seleccionados</div>
+        <div class="presu-params-grid">
+            <div class="presu-params-img" id="presuImagen"></div>
+            <div class="informe-params" id="presuDatos"></div>
+        </div>
+
+        <div class="informe-nota" id="presuNota" style="display:none"></div>
+
+        <div class="informe-aviso-templado">IMPORTANTE: Todos los cálculos están realizados para emplear vidrio templado de 4 mm</div>
+
+        <div class="bloque-titulo">Artículos</div>
+        <table class="tabla-informe">
+            <thead>
+                <tr>
+                    <th style="width:16%">Código</th>
+                    <th>Descripción</th>
+                    <th class="num" style="width:8%">Cant.</th>
+                    <th class="num" style="width:14%">P. Unit.</th>
+                    <th class="num" style="width:14%">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody id="presuArticulos"></tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="aviso-copia">Haz clic en cualquier celda resaltada para copiar su contenido</td>
+                    <td class="num">TOTAL</td>
+                    <td class="num" id="presuTotal">—</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="informe-consultar-motivo" id="presuMotivo" style="display:none"></div>
+
+        <div class="informe-version" id="presuVersion"></div>
+
+    </div>
+</section>
+
+<!-- Ayuda (?) — mismo comportamiento que el resto del ecosistema -->
+<script>
+let _helpBtn = null;
+function toggleHelp(btn) {
+  const pop = document.getElementById('help-popover');
+  if (_helpBtn === btn && pop.classList.contains('visible')) {
+    pop.classList.remove('visible'); _helpBtn = null; return;
+  }
+  _helpBtn = btn;
+  const r = btn.getBoundingClientRect();
+  // Desplazamiento a la derecha: el (?) está en la columna de cotas; sin offset
+  // el cuadro las taparía. Lo corremos ~280px para que caiga sobre la columna
+  // central/SVG y las cotas queden visibles mientras se lee la ayuda.
+  const OFFSET_X = 150;
+  pop.style.top  = (r.bottom +1) + 'px';
+  pop.style.left = Math.min(r.left - 4 + OFFSET_X, window.innerWidth - 440) + 'px';
+  pop.classList.add('visible');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.btn-help') && !e.target.closest('#help-popover')) {
+    document.getElementById('help-popover').classList.remove('visible');
+    _helpBtn = null;
+  }
+});
+</script>
 
 </body>
 </html>
