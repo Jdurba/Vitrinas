@@ -497,9 +497,10 @@ function aplicarFabImportado(f) {
 // MODO SOLO LECTURA
 // ==========================================
 
-// Un único punto de bloqueo: se desactivan todos los controles de la hoja.
-// Más seguro que ir marcando disabled campo a campo en cada render, donde
-// olvidar uno pasa inadvertido.
+// Un único punto de bloqueo: se repinta la hoja con el modo ya activo para
+// que no se enlace ningún listener, y se desactivan los controles.
+// El bloqueo efectivo es la ausencia de listener: marcar disabled campo a
+// campo no basta (no afecta a los <div>) y no sobrevive a un repintado.
 function aplicarModoImportado() {
     const fabVista = document.getElementById('fabVista');
     if (fabVista) fabVista.classList.add('fab-importado');
@@ -512,6 +513,14 @@ function aplicarModoImportado() {
     const btnExp = document.getElementById('fabBtnExportar');
     if (btnExp) btnExp.style.display = 'none';
 
+    // Repintado con el flag ya activo. Los controles se enlazan durante el
+    // render, que ocurrió ANTES de importar; sin este repaso quedarían vivos
+    // los listeners de la hoja normal. bindFabInputs y bindBisagras ven
+    // modoImportado y no enlazan nada, así que tras esto la hoja es inerte.
+    renderFabIzq();
+
+    // El disabled ya no es el bloqueo, es la señal visual y el corte por
+    // teclado (tab + Enter sobre un botón).
     document.querySelectorAll('#fabInputs input, #fabInputs button, #fabInputs select, ' +
                               '#fabBisagras input, #fabBisagras button, #fabBisagras select')
         .forEach(el => { el.disabled = true; });

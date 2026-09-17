@@ -424,6 +424,12 @@ function onCotaChange(el, handler) {
 }
 
 function bindFabInputs() {
+    // Configuración importada: no se enlaza nada. El bloqueo real es la
+    // ausencia de listener, no el atributo disabled — así da igual que el
+    // control sea un input, un botón o un div, y da igual cuántas veces se
+    // repinte el bloque: sin listener no hay forma de tocar fabState.
+    if (modoImportado) return;
+
     document.querySelectorAll('.fab-mano-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             fabState.mano = btn.dataset.mano;
@@ -896,6 +902,11 @@ function renderBisagras() {
 }
 
 function bindBisagras() {
+    // Mismo criterio que bindFabInputs: importado = sin listeners.
+    // Las tarjetas de montaje son <div>, así que disabled no las frena; y su
+    // clic repintaba el bloque entero devolviendo base y color a editables.
+    if (modoImportado) return;
+
     document.querySelectorAll('[data-bismontaje]').forEach(el => {
         el.addEventListener('click', () => {
             fabState.bisMontaje = el.dataset.bismontaje;
