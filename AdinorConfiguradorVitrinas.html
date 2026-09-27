@@ -10,7 +10,7 @@
     window.ADINOR_CONFIG = {
         tituloModal: 'Adinor · Vitrinas'
     };
-    window.VERSION_APP = 'V.03';
+    window.VERSION_APP = 'V.04';
 
     // Un único sitio define la versión; la app la muestra donde haga falta.
     document.addEventListener('DOMContentLoaded', () => {
@@ -683,6 +683,10 @@
 
         .bisagras-nominal-info.activo {
             color: var(--color-text);
+        }
+
+        .bisagras-nominal-info.aviso {
+            color: #c0392b;
         }
 
         .bisagras-counter {
@@ -1620,6 +1624,14 @@
 
         /* Observaciones de cabecera — bloque propio, entre parámetros y aviso.
            No va en el grid de artículos: acompaña al documento, no define la vitrina. */
+        .informe-fuera-medida {
+            margin: 8px 0 12px;
+            padding: 6px 12px;
+            background: #fdecec;
+            border: 1px solid #c0392b;
+            border-radius: 4px;
+            color: #c0392b; font-weight: bold; font-size: 12px; text-align: center;
+        }
         .informe-nota {
             margin: 12px 0 0;
             padding: 8px 12px;
@@ -2304,12 +2316,12 @@
 
 <script src="https://jdurba.github.io/General/jspdf_umd_min.js"></script>
 <script src="js/autotable_min.js?v=1"></script>
-<script src="js/config.js?v=6" defer></script>
-<script src="js/configurador.js?v=10" defer></script>
-<script src="js/fabricacion.js?v=12" defer></script>
-<script src="js/pdfVitrinas.js?v=12" defer></script>
-<script src="js/presupuesto.js?v=17" defer></script>
-<script src="js/intercambio.js?v=10" defer></script>
+<script src="js/config.js?v=8" defer></script>
+<script src="js/configurador.js?v=12" defer></script>
+<script src="js/fabricacion.js?v=13" defer></script>
+<script src="js/pdfVitrinas.js?v=14" defer></script>
+<script src="js/presupuesto.js?v=19" defer></script>
+<script src="js/intercambio.js?v=11" defer></script>
 
 
 <!-- ==========================================
@@ -2391,6 +2403,7 @@
                 <span class="informe-fecha" id="presuFecha"></span>
             </div>
         </div>
+        <div class="informe-fuera-medida" id="presuFueraMedida" style="display:none"></div>
 
         <div class="bloque-titulo">Parámetros seleccionados</div>
         <div class="presu-params-grid">
