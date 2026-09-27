@@ -5,16 +5,28 @@ const CONFIG = {
 
     bisagras_rangos: [
         { hasta: 900,  num: 2 },
-        { hasta: 1600, num: 3 },
+        { hasta: 1500, num: 3 },
         { hasta: 2000, num: 4 },
         { hasta: 2500, num: 5 },
-        { hasta: 2800, num: 6 }
+        { hasta: 3000, num: 6 }
     ],
     bisagras_B1_defecto: 100,
     bisagras_B2_defecto: 100,
     bisagras_B_minimo:    70,
     bisagras_C_minimo:    80,
     bisagras_max_global:   6,
+    // Quitar bisagras: se permite bajar del nominal como máximo bisagras_quitar_max,
+    // nunca por debajo del mínimo físico. Por debajo del nominal = fuera de especificación.
+    bisagras_min_fisico:   2,
+    bisagras_quitar_max:   1,
+
+    // Límites de medida (mm), genéricos para todos los modelos.
+    //   · maxAltura/maxAncho del modelo = límite TÉCNICO → se permite con aviso.
+    //   · medida_max_absoluta          = límite DURO   → bloquea.
+    //   · vidrio_max_altura_puerta     = por encima (altura exterior de puerta)
+    //     no se sirve vidrio montado; la vitrina sigue siendo válida.
+    medida_max_absoluta:      { altura: 3000, ancho: 650 },
+    vidrio_max_altura_puerta: 2800,
 
     // Holgura mínima entre el extremo del tirador y el borde de la puerta (mm).
     // De aquí se derivan, sin más tablas:

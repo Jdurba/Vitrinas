@@ -23,6 +23,7 @@ const state = {
     precioMecExtra: null,   // €/mecanizado bisagra extra (VV.MEC.B), cargado del CSV en init
     bisagrasTotal: 0,
     bisagrasMaxTecnico: 0,
+    bisagrasMinimo: 0,      // mínimo admitido: max(min físico, nominal − quitar_max)
     bisagrasCalculadas: 0,
     sinMecanizado: false,
     adjuntarBisagras: null,   // null = sin responder, true = Sí, false = No
@@ -34,8 +35,45 @@ const state = {
     vidrioAncho: 0
 };
 
-// Límite duro de fabricación del vidrio (mm)
-const VIDRIO_MAX_ALTO = 2800;
+// Diseño por encima de los límites técnicos del modelo (sin llegar al absoluto).
+function esFueraMedidaTecnica() {
+    const m = CONFIG.modelos[state.modelo];
+    if (!m) return false;
+    return state.alturaReal > m.maxAltura || state.anchoReal > m.maxAncho;
+}
+
+// Menos bisagras de las recomendadas (nominal). Marco limpio no cuenta.
+function esBisagrasBajoNominal() {
+    return !state.sinMecanizado && state.bisagrasExtras < 0;
+}
+
+// Cualquier motivo fuera de especificación. Derivado del estado: lo consultan
+// la vista y los PDFs, no se almacena.
+function esFueraEspecificacion() {
+    return esFueraMedidaTecnica() || esBisagrasBajoNominal();
+}
+
+// Texto único de cabecera para vista y PDFs. El detalle va en cada campo.
+function textoFueraEspecificacion() {
+    return 'DISEÑO FUERA DE ESPECIFICACIONES TÉCNICAS · BAJO RESPONSABILIDAD DEL CLIENTE';
+}
+
+// Detalle de campo: medidas de la vitrina.
+function textoMedidasVitrina() {
+    const m = CONFIG.modelos[state.modelo];
+    let t = `${state.alturaReal} × ${state.anchoReal} mm`;
+    if (esFueraMedidaTecnica()) t += ` (máx. técnico ${m.maxAltura} × ${m.maxAncho})`;
+    return t;
+}
+
+// Detalle de campo: nº de bisagras.
+function textoBisagras() {
+    let t = String(state.bisagrasTotal);
+    if (state.sinMecanizado)           t += ' (sin mecanizar)';
+    else if (state.bisagrasExtras > 0) t += ` (${state.bisagrasExtras} extra)`;
+    else if (state.bisagrasExtras < 0) t += ` (${-state.bisagrasExtras} menos de las recomendadas)`;
+    return t;
+}
 
 // ==========================================
 // GEOMETRÍA DEL TIRADOR (compartido con fabricacion.js)
@@ -241,8 +279,7 @@ function seleccionarModelo(card) {
 
     if (state.alturaReal > 0) {
         const v = validarMedida('altura', state.alturaReal);
-        avisarSiBloqueoVidrio(v);
-        actualizarDisponibilidadVidrio(!!v.motivoVidrio);
+        actualizarDisponibilidadVidrio(!!v.sinVidrio);
         if (v.valido && !v.bloqueado) {
             calcularBisagrasAutomaticas();
         } else {
@@ -485,8 +522,7 @@ function calcularMedida(tipo, campo) {
 
     const validacion = validarMedida(tipo, state[`${tipo}Real`]);
     mostrarValidacion(tipo, validacion);
-    avisarSiBloqueoVidrio(validacion);
-    if (tipo === 'altura') actualizarDisponibilidadVidrio(!!validacion.motivoVidrio);
+    if (tipo === 'altura') actualizarDisponibilidadVidrio(!!validacion.sinVidrio);
     calcularVidrio();
 
     if (validacion.bloqueado) {
@@ -518,14 +554,8 @@ function calcularVidrio() {
     state.vidrioAncho = (m && state.anchoReal  > 0) ? state.anchoReal  - (m.DescV_Anc || 0) : 0;
 }
 
-// Aviso modal si la altura queda bloqueada por vidrio > máximo
-function avisarSiBloqueoVidrio(validacion) {
-    if (validacion.motivoVidrio) {
-        aviso(`El vidrio resultante supera el máximo fabricable de ${VIDRIO_MAX_ALTO} mm de alto.\nNo es posible fabricar esta vitrina.`);
-    }
-}
-
-// Habilitar/deshabilitar "Montada con Vidrio" según bloqueo por vidrio
+// Habilitar/deshabilitar "Montada con Vidrio" según altura de puerta.
+// El modal solo salta si había vidrio marcado y se retira; si no, basta el mensaje de la cota.
 function actualizarDisponibilidadVidrio(bloqueado) {
     if (!elementos.vidrioMontado) return;
 
@@ -534,6 +564,7 @@ function actualizarDisponibilidadVidrio(bloqueado) {
     if (label) label.classList.toggle('disabled', bloqueado);
 
     if (bloqueado && state.vidrioMontado) {
+        aviso(`Por encima de ${CONFIG.vidrio_max_altura_puerta} mm de altura no se sirve vidrio montado.\nSe ha desmarcado "Montada con vidrio".`);
         elementos.vidrioMontado.checked = false;
         // Reutiliza actualizarVidrio(): limpia color, deshabilita select y revalida
         elementos.vidrioMontado.dispatchEvent(new Event('change'));
@@ -550,37 +581,34 @@ function validarMedida(tipo, valor) {
         return { valido: false, mensaje: '← Selecciona un modelo primero', clase: 'info', bloqueado: false };
     }
 
-    const max = tipo === 'altura' ? modelo.maxAltura : modelo.maxAncho;
-    const min = tipo === 'altura' ? modelo.minAltura : modelo.minAncho;
+    const max    = tipo === 'altura' ? modelo.maxAltura : modelo.maxAncho;
+    const min    = tipo === 'altura' ? modelo.minAltura : modelo.minAncho;
+    const maxAbs = CONFIG.medida_max_absoluta[tipo];
 
     if (valor < 0) {
         return { valido: false, mensaje: '⛔ No se permiten valores negativos', clase: 'error', bloqueado: true };
     }
 
     if (!valor || valor === 0) {
-        return { valido: false, mensaje: `Rango válido: ${min}-${max} mm`, clase: 'info', bloqueado: false };
+        return { valido: false, mensaje: `Rango técnico: ${min}-${max} mm (máx. ${maxAbs})`, clase: 'info', bloqueado: false };
     }
 
     if (valor < min) {
         return { valido: false, mensaje: `⛔ Mínimo absoluto: ${min} mm`, clase: 'error', bloqueado: true };
     }
 
-    // Bloqueo duro: vidrio resultante supera el máximo fabricable
-    if (tipo === 'altura') {
-        const vidrioAlto = valor - (modelo.DescV_Alt || 0);
-        if (vidrioAlto > VIDRIO_MAX_ALTO) {
-            return {
-                valido: false,
-                mensaje: `⛔ Vidrio ${vidrioAlto} mm supera el máximo fabricable (${VIDRIO_MAX_ALTO} mm)`,
-                clase: 'error',
-                bloqueado: true,
-                motivoVidrio: true
-            };
-        }
+    if (valor > maxAbs) {
+        return { valido: false, mensaje: `⛔ Máximo absoluto: ${maxAbs} mm`, clase: 'error', bloqueado: true };
     }
 
-    if (valor > max) {
-        return { valido: true, mensaje: `⚠️ Supera máximo recomendado (${max} mm)`, clase: 'advertencia', bloqueado: false };
+    // Sin vidrio montado por encima del límite (referencia: altura exterior de puerta)
+    const sinVidrio = tipo === 'altura' && valor > CONFIG.vidrio_max_altura_puerta;
+
+    if (valor > max || sinVidrio) {
+        const partes = [];
+        if (valor > max) partes.push(`Fuera de medidas técnicas (máx. ${max} mm)`);
+        if (sinVidrio)   partes.push('sin vidrio montado');
+        return { valido: true, mensaje: `⚠️ ${partes.join(' · ')}`, clase: 'advertencia', bloqueado: false, sinVidrio };
     }
 
     return { valido: true, mensaje: `✓ Válido (${min}-${max} mm)`, clase: 'valido', bloqueado: false };
@@ -623,6 +651,7 @@ function calcularBisagrasAutomaticas() {
         state.bisagrasNominal    = modeloConfig.bisagras_fijas;
         state.bisagrasExtras     = 0;
         state.bisagrasMaxTecnico = modeloConfig.bisagras_fijas;
+        state.bisagrasMinimo     = modeloConfig.bisagras_fijas;
         state.bisagrasCalculadas = modeloConfig.bisagras_fijas;
         state.bisagrasTotal      = modeloConfig.bisagras_fijas;
         if (!state.sinMecanizado) renderWidgetBisagras(true);
@@ -640,6 +669,7 @@ function calcularBisagrasAutomaticas() {
         state.bisagrasNominal    = nominal;
         state.bisagrasExtras     = 0;
         state.bisagrasMaxTecnico = nominal;
+        state.bisagrasMinimo     = nominal;
         state.bisagrasTotal      = nominal;
         state.bisagrasCalculadas = nominal;
         return;
@@ -659,6 +689,7 @@ function calcularBisagrasAutomaticas() {
     state.bisagrasNominal    = nominal;
     state.bisagrasExtras     = 0;
     state.bisagrasMaxTecnico = Math.max(nominal, maxTecnico);
+    state.bisagrasMinimo     = Math.max(CONFIG.bisagras_min_fisico, nominal - CONFIG.bisagras_quitar_max);
     state.bisagrasTotal      = nominal;
     state.bisagrasCalculadas = nominal;
 
@@ -666,16 +697,10 @@ function calcularBisagrasAutomaticas() {
 }
 
 function renderWidgetBisagras(fijas) {
-    const { bisagrasNominal, bisagrasMaxTecnico, bisagrasTotal } = state;
+    const { bisagrasTotal } = state;
 
     if (elementos.bisagrasWidget) elementos.bisagrasWidget.classList.add('activo');
-
-    if (elementos.bisagrasNominalInfo) {
-        elementos.bisagrasNominalInfo.classList.add('activo');
-        elementos.bisagrasNominalInfo.textContent = fijas
-            ? 'Bisagras fijas para este perfil'
-            : `Nominal: ${bisagrasNominal}  ·  Máx. técnico: ${bisagrasMaxTecnico}`;
-    }
+    pintarInfoBisagras(fijas);
 
     if (elementos.bisagrasNum) {
         elementos.bisagrasNum.textContent = bisagrasTotal;
@@ -685,22 +710,39 @@ function renderWidgetBisagras(fijas) {
     const labelEl = document.getElementById('bisagrasLabel');
     if (labelEl) labelEl.classList.remove('disabled');
 
-    if (elementos.bisagrasMenos) elementos.bisagrasMenos.disabled = fijas || bisagrasTotal <= bisagrasNominal;
-    if (elementos.bisagrasmas)   elementos.bisagrasmas.disabled   = fijas || bisagrasTotal >= bisagrasMaxTecnico;
-
+    pintarBotonesBisagras(fijas);
     actualizarPrecioBisagrasExtra();
+}
+
+// Texto informativo del widget; avisa si se ha bajado del nominal.
+function pintarInfoBisagras(fijas) {
+    const el = elementos.bisagrasNominalInfo;
+    if (!el) return;
+    el.classList.add('activo');
+    const bajo = !fijas && state.bisagrasTotal < state.bisagrasNominal;
+    el.classList.toggle('aviso', bajo);
+    el.textContent = fijas
+        ? 'Bisagras fijas para este perfil'
+        : `Recomendadas: ${state.bisagrasNominal}  ·  Máx. técnico: ${state.bisagrasMaxTecnico}` +
+          (bajo ? `  ·  ⚠️ Por debajo de las recomendadas` : '');
+}
+
+function pintarBotonesBisagras(fijas) {
+    if (elementos.bisagrasMenos) elementos.bisagrasMenos.disabled = fijas || state.bisagrasTotal <= state.bisagrasMinimo;
+    if (elementos.bisagrasmas)   elementos.bisagrasmas.disabled   = fijas || state.bisagrasTotal >= state.bisagrasMaxTecnico;
 }
 
 function resetearWidgetBisagras() {
     state.bisagrasNominal    = 0;
     state.bisagrasExtras     = 0;
     state.bisagrasMaxTecnico = 0;
+    state.bisagrasMinimo     = 0;
     state.bisagrasTotal      = 0;
     state.bisagrasCalculadas = 0;
 
     if (elementos.bisagrasWidget) elementos.bisagrasWidget.classList.remove('activo');
     if (elementos.bisagrasNominalInfo) {
-        elementos.bisagrasNominalInfo.classList.remove('activo');
+        elementos.bisagrasNominalInfo.classList.remove('activo', 'aviso');
         elementos.bisagrasNominalInfo.textContent = 'Introduce altura real primero';
     }
     if (elementos.bisagrasNum) {
@@ -728,8 +770,10 @@ function actualizarSinMecanizado(e) {
         elementos.bisagrasWidget?.classList.add('deshabilitado');
         if (elementos.bisagrasMenos) elementos.bisagrasMenos.disabled = true;
         if (elementos.bisagrasmas)   elementos.bisagrasmas.disabled   = true;
-        if (elementos.bisagrasNominalInfo)
+        if (elementos.bisagrasNominalInfo) {
+            elementos.bisagrasNominalInfo.classList.remove('aviso');
             elementos.bisagrasNominalInfo.textContent = 'Marco limpio — sin mecanizado';
+        }
         actualizarPrecioBisagrasExtra();
     } else {
         elementos.bisagrasWidget?.classList.remove('deshabilitado');
@@ -793,14 +837,15 @@ function cambiarBisagrasExtra(delta) {
     if (modeloConfig?.bisagras_fijas) return;
 
     const nuevo = state.bisagrasTotal + delta;
-    if (nuevo < state.bisagrasNominal || nuevo > state.bisagrasMaxTecnico) return;
+    if (nuevo < state.bisagrasMinimo || nuevo > state.bisagrasMaxTecnico) return;
 
+    // Negativo = por debajo del nominal (fuera de especificación)
     state.bisagrasExtras = nuevo - state.bisagrasNominal;
     state.bisagrasTotal  = nuevo;
 
     if (elementos.bisagrasNum) elementos.bisagrasNum.textContent = nuevo;
-    if (elementos.bisagrasMenos) elementos.bisagrasMenos.disabled = nuevo <= state.bisagrasNominal;
-    if (elementos.bisagrasmas)   elementos.bisagrasmas.disabled   = nuevo >= state.bisagrasMaxTecnico;
+    pintarInfoBisagras(false);
+    pintarBotonesBisagras(false);
 
     actualizarPrecioBisagrasExtra();
     actualizarResumen();

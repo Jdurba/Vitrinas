@@ -452,11 +452,11 @@ function pintarInforme(r) {
         dato('Modelo', state.modelo + ' — ' + m.nombre) +
         dato('Acabado', a.nombre) +
         (state.acabado === 'ESP' && state.acabadoEspecial ? dato('Acabado especial', state.acabadoEspecial) : '') +
-        dato('Medidas vitrina', state.alturaReal + ' × ' + state.anchoReal + ' mm') +
+        dato('Medidas vitrina', textoMedidasVitrina()) +
         dato('Medida vidrio', state.vidrioAlto + ' × ' + state.vidrioAncho + ' mm') +
         dato('Vidrio montado', state.vidrioMontado ? 'Sí — ' + CONFIG.coloresVidrio[state.colorVidrio].nombre : 'No') +
         (state.colorVidrio === 'especial' && state.vidrioEspecial ? dato('Vidrio especial', state.vidrioEspecial) : '') +
-        dato('Bisagras', state.bisagrasTotal + (state.sinMecanizado ? ' (sin mecanizar)' : (state.bisagrasExtras > 0 ? ' (' + state.bisagrasExtras + ' extra)' : ''))) +
+        dato('Bisagras', textoBisagras()) +
         dato('Tirador', state.tirador && state.tiradorTipo ? CONFIG.tiradores[state.tiradorTipo].medidas : 'No') +
         dato('Cantidad', state.cantidad + ' ud.');
 
@@ -506,6 +506,14 @@ function pintarInforme(r) {
     }
 
     document.getElementById('presuArticulos').innerHTML = filas;
+
+    // ── Aviso fuera de especificaciones (cabecera) ──────────────
+    const fueraEl = document.getElementById('presuFueraMedida');
+    if (fueraEl) {
+        const fuera = esFueraEspecificacion();
+        fueraEl.textContent   = fuera ? '⚠️ ' + textoFueraEspecificacion() : '';
+        fueraEl.style.display = fuera ? '' : 'none';
+    }
 
     // ── Observaciones de cabecera ───────────────────────────────
     // Bloque propio entre parámetros y aviso de vidrio templado: acompaña al
@@ -565,6 +573,15 @@ function bindCopiaPorClic(contenedor) {
 
 // ── PDF NATIVO: redibujado con jsPDF + autotable ────────────────
 // Texto seleccionable, nitidez vectorial, peso mínimo. Sin html2canvas.
+// Banda roja de aviso "fuera de especificaciones".
+function pdfAvisoFueraMedida(pdf, x, y, w) {
+    pdf.setFillColor(253, 236, 236);
+    pdf.setDrawColor(192, 57, 43); pdf.setLineWidth(0.4);
+    pdf.rect(x, y, w, 7, 'FD');
+    pdf.setFont('helvetica', 'bold'); pdf.setFontSize(9); pdf.setTextColor(192, 57, 43);
+    pdf.text(textoFueraEspecificacion(), x + w / 2, y + 4.8, { align: 'center' });
+}
+
 async function generarPDFPresupuesto() {
     const btn = document.getElementById('presuBtnPDF');
     const textoOrig = btn.textContent;
@@ -608,6 +625,12 @@ async function generarPDFPresupuesto() {
         pdf.line(mL, y, W - mR, y);
         y += 6;
 
+        // ── AVISO FUERA DE ESPECIFICACIONES (cabecera) ──
+        if (esFueraEspecificacion()) {
+            pdfAvisoFueraMedida(pdf, mL, y, contentW);
+            y += 11;
+        }
+
         // ── TÍTULO: PARÁMETROS SELECCIONADOS (banda gris, como ARTÍCULOS) ──
         pdf.setFillColor(230, 230, 230);
         pdf.rect(mL, y, contentW, 7, 'F');
@@ -632,11 +655,11 @@ async function generarPDFPresupuesto() {
         datos.push(['Modelo', state.modelo + ' — ' + m.nombre]);
         datos.push(['Acabado', a.nombre]);
         if (state.acabado === 'ESP' && state.acabadoEspecial) datos.push(['Acabado especial', state.acabadoEspecial]);
-        datos.push(['Medidas vitrina', state.alturaReal + ' × ' + state.anchoReal + ' mm']);
+        datos.push(['Medidas vitrina', textoMedidasVitrina()]);
         datos.push(['Medida vidrio', state.vidrioAlto + ' × ' + state.vidrioAncho + ' mm']);
         datos.push(['Vidrio montado', state.vidrioMontado ? 'Sí — ' + CONFIG.coloresVidrio[state.colorVidrio].nombre : 'No']);
         if (state.colorVidrio === 'especial' && state.vidrioEspecial) datos.push(['Vidrio especial', state.vidrioEspecial]);
-        datos.push(['Bisagras', String(state.bisagrasTotal) + (state.sinMecanizado ? ' (sin mecanizar)' : (state.bisagrasExtras > 0 ? ' (' + state.bisagrasExtras + ' extra)' : ''))]);
+        datos.push(['Bisagras', textoBisagras()]);
         datos.push(['Tirador', state.tirador && state.tiradorTipo ? CONFIG.tiradores[state.tiradorTipo].medidas : 'No']);
         datos.push(['Cantidad', state.cantidad + ' ud.']);
 

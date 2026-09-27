@@ -422,9 +422,10 @@ function replayConfiguracion(c, cab) {
         elementos.sinMecanizado.dispatchEvent(new Event('change'));
     }
 
-    // Bisagras extra: un clic por unidad, como haría el usuario.
+    // Bisagras extra (o quitadas si es negativo): un clic por unidad, como haría el usuario.
     const extras = parseInt(c.bisagrasExtras, 10) || 0;
-    for (let i = 0; i < extras; i++) cambiarBisagrasExtra(+1);
+    const paso   = extras > 0 ? +1 : -1;
+    for (let i = 0; i < Math.abs(extras); i++) cambiarBisagrasExtra(paso);
     if (state.bisagrasExtras !== extras)
         throw new ErrImport('El número de bisagras del fichero ya no es posible con estas medidas.');
 

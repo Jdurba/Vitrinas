@@ -394,11 +394,21 @@ async function generarPDFVitrinas(pedido, cliente) {
         const tituloCentro = tituloLeft + (W - mR - tituloLeft) / 2;
         pdf.text('HOJA DE FABRICACIÓN DE VITRINAS', tituloCentro, 14, { align: 'center' });
 
+        // Aviso fuera de especificaciones: bajo el título, dentro de la cabecera.
+        // No desplaza nada: el área de dibujo y la conformidad quedan igual.
+        if (esFueraEspecificacion()) {
+            pdf.setTextColor(192, 57, 43);
+            pdf.setFontSize(7.5);
+            pdf.text(textoFueraEspecificacion(), tituloCentro, 20, { align: 'center' });
+            pdf.setTextColor(...AZUL);
+        }
+
         // Borde inferior de cabecera (fina y separada del logo)
         pdf.setDrawColor(...AZUL);
         pdf.setLineWidth(0.4);
         pdf.line(mL, 23, W - mR, 23);
         y = 31;
+
 
         // Helper: barra de sección estilo A4 (gris con texto oscuro mayúsculas)
         function seccion(texto, xx, ancho, yy) {
@@ -557,7 +567,8 @@ async function generarPDFVitrinas(pedido, cliente) {
         pdf.setFontSize(8.5); pdf.setFont('helvetica', 'bold'); pdf.setTextColor(60);
         pdf.setFillColor(232, 232, 232);
         pdf.rect(tblX, y, 54, 5, 'FD');
-        pdf.text(`Nº Bisagras: ${n}`, tblX + 27, y + 3.5, { align: 'center' });
+        const recomTxt = esBisagrasBajoNominal() ? ` (recom. ${state.bisagrasNominal})` : '';
+        pdf.text(`Nº Bisagras: ${n}${recomTxt}`, tblX + 27, y + 3.5, { align: 'center' });
         y += 6;
 
         if (sinMec) {

@@ -223,10 +223,10 @@ function renderFicha() {
         <div class="fab-ficha-fila"><span>Modelo</span><strong>${state.modelo} — ${m?.nombre || ''}</strong></div>
         <div class="fab-ficha-fila"><span>Acabado</span><strong>${a?.nombre || '-'}</strong></div>
         ${acabadoEsp ? `<div class="fab-ficha-fila"><span>Acabado especial</span><strong>${state.acabadoEspecial}</strong></div>` : ''}
-        <div class="fab-ficha-fila"><span>Alto × Ancho</span><strong>${state.alturaReal} × ${state.anchoReal} mm</strong></div>
+        <div class="fab-ficha-fila"><span>Alto × Ancho</span><strong>${textoMedidasVitrina()}</strong></div>
         <div class="fab-ficha-fila"><span>Medida vidrio</span><strong>${state.vidrioAlto} × ${state.vidrioAncho} mm</strong></div>
         <div class="fab-ficha-fila"><span>Cantidad</span><strong>${state.cantidad} ud.</strong></div>
-        <div class="fab-ficha-fila"><span>Bisagras</span><strong>${state.bisagrasTotal}</strong></div>
+        <div class="fab-ficha-fila"><span>Bisagras</span><strong>${textoBisagras()}</strong></div>
         ${t ? `<div class="fab-ficha-fila"><span>Tirador</span><strong>${t.medidas}</strong></div>` : ''}
         <div class="fab-ficha-fila"><span>Vidrio</span><strong>${vStr}</strong></div>
         ${vidrioEsp ? `<div class="fab-ficha-fila"><span>Vidrio especial</span><strong>${state.vidrioEspecial}</strong></div>` : ''}
